@@ -1,9 +1,8 @@
 import express, { Express, Request, Response } from 'express'
-import dotenv from 'dotenv'
+import "dotenv/config"
 import authRoutes from './interfaces/routes/authRoutes';
 import { errorHandler } from './shared/middleware/errorHandler';
 
-dotenv.config()
 
 const app: Express = express()
 const port = process.env.PORT || 3000
