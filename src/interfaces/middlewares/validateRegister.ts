@@ -1,16 +1,15 @@
 import { check, ValidationChain } from "express-validator";
 // import { Request } from "express";
-// import db from "../";
 
 
 const validateRegister: ValidationChain[] = [
-  check("firstName")
+  check("name")
   .trim()
   .notEmpty().withMessage('Debe ingresar su nombre')
   .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s[a-zA-ZÀ-ÿ\u00f1\u00d1]+)*$/).withMessage('El nombre solo puede contener letras')
   .isLength({ min: 2, max: 50 }).withMessage('El nombre ingresado debe tener entre 2 y 50 letras.'),
   
-  check("lastName")
+  check("surname")
     .trim()
     .notEmpty().withMessage("Debe ingresar un apellido.")
     .isLength({ min: 2, max: 20 }).withMessage("El apellido ingresado debe tener entre 2 y 20 letras.")
@@ -20,13 +19,6 @@ const validateRegister: ValidationChain[] = [
   check("email")
     .notEmpty().withMessage("Debe ingresar un mail.")
     .isEmail().withMessage('Debe ser un correo electrónico válido').normalizeEmail(),
-    // .custom(async (value) => {
-    //   const user = await db.User.findOne({ where: { email: value } });
-    //   if (!user) {
-    //     return true;
-    //   }
-    //   throw new Error("El mail ingresado ya está en uso.");
-    // })
 
   check("password")
     .notEmpty().withMessage("Debe ingresar una contraseña.")
@@ -56,13 +48,13 @@ const validateRegister: ValidationChain[] = [
           return true;
     }),
 
-    check("confirm-password")
-    .custom((value, { req }) => {
-      if (value === req.body.password) {
-        return true;
-      }
-      throw new Error("Las contraseñas no coinciden.");
-    })
+    // check("confirm-password")
+    // .custom((value, { req }) => {
+    //   if (value === req.body.password) {
+    //     return true;
+    //   }
+    //   throw new Error("Las contraseñas no coinciden.");
+    // })
 
 //   check("img")
 //     .custom((value, { req }) => {
@@ -72,7 +64,6 @@ const validateRegister: ValidationChain[] = [
 //       }
 //       throw new Error("La imagen debe ser en formato PNG, JPEG, JPG o GIF.");
 //     }),
-
 
 ];
 
