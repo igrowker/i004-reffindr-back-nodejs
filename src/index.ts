@@ -1,22 +1,20 @@
 import express, { Express, Request, Response } from 'express'
-import "dotenv/config"
-import authRoutes from './interfaces/routes/authRoutes';
-import { errorHandler } from './shared/middleware/errorHandler';
+import authRoutes from './interfaces/routes/authRoutes'
+import { errorHandler } from './shared/middleware/errorHandler'
+import 'dotenv/config'
 
-
+const { PORT } = process.env
 const app: Express = express()
-const port = process.env.PORT || 3000
 
-app.use(express.json());
+app.use(express.json())
 
-app.use('/auth', authRoutes);
-app.use(errorHandler);
-
+app.use('/auth', authRoutes)
 
 app.get('/', (_req: Request, res: Response) => {
   res.send('Express + TypeScript Server')
 })
+app.use(errorHandler)
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`)
+app.listen(PORT, () => {
+  console.log(`[server]: Server is running at http://localhost:${PORT}`)
 })
