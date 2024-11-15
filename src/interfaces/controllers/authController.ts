@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express'
 import { validationResult } from 'express-validator'
-import httpClient from '../../shared/config/axiosConfig'
+import httpClient from '../services/httpClient'
 import validateRegister from '../middlewares/validateRegister'
 
 const router = Router()
