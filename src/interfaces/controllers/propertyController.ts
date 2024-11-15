@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import axios from 'axios'
+import router from './authController'
 
 const BACKEND_URL = process.env.BACKEND_URL
 
@@ -20,3 +21,5 @@ export const createProperty = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error al crear la propiedad.' })
   }
 }
+
+export default router

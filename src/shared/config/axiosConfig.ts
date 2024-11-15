@@ -11,4 +11,16 @@ const httpClient = axios.create({
   },
 })
 
+httpClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    return Promise.reject({
+      response: {
+        status: error.response?.status || 500,
+        data: error.response?.data || { message: "Internal Server Error." },
+      },
+    });
+  }
+);
+
 export default httpClient
