@@ -75,9 +75,21 @@ Tu aplicación estará disponible en http://localhost:${PORT}.
 
 ## Desplegar tu aplicación en la nube
 
-Primero, construye tu imagen, por ejemplo: docker build -t myapp .. Si tu nube usa una arquitectura de CPU diferente a la de tu máquina de desarrollo (por ejemplo, estás en un Mac M1 y tu proveedor de la nube es amd64), querrás construir la imagen para esa plataforma, por ejemplo: docker build --platform=linux/amd64 -t myapp ..
+Primero, construye tu imagen, por ejemplo: 
+```
+docker build -t myapp .
+```
+Si tu nube usa una arquitectura de CPU diferente a la de tu máquina de desarrollo (por ejemplo, estás en un Mac M1 y tu proveedor de la nube es amd64), querrás construir la imagen para esa plataforma, por ejemplo:
 
-Luego, súbela a tu registro, por ejemplo docker push myregistry.com/myapp.
+```
+docker build --platform=linux/amd64 -t myapp .
+```
+
+Luego, súbela a tu registro, por ejemplo: 
+
+```
+docker push myregistry.com/myapp.
+```
 
 Consulta la documentación de inicio de Docker [getting started](https://docs.docker.com/go/get-started-sharing/) para más detalles sobre cómo construir y subir.
 
@@ -87,4 +99,4 @@ Consulta la documentación de inicio de Docker [getting started](https://docs.do
 
 ## Licencia
 
-Este proyecto está licenciado bajo la **MIT License**
+Este proyecto está licenciado bajo la **MIT License**.
