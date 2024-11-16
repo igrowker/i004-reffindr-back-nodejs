@@ -67,9 +67,9 @@ PORT=3000
 JWT_SECRET=mysecretkey
 ```
 
-## Construcción y ejecución de tu aplicación
+## Construcción y ejecución de la aplicación
 
-Cuando estés listo, inicia tu aplicación ejecutando: docker compose up --build.
+Inicia tu aplicación ejecutando: docker compose up --build.
 
 Tu aplicación estará disponible en http://localhost:${PORT}.
 
@@ -77,12 +77,13 @@ Tu aplicación estará disponible en http://localhost:${PORT}.
 
 Primero, construye tu imagen, por ejemplo: 
 ```
-docker build -t myapp .
+docker build -t myapp:tag .
 ```
+
 Si tu nube usa una arquitectura de CPU diferente a la de tu máquina de desarrollo (por ejemplo, estás en un Mac M1 y tu proveedor de la nube es amd64), querrás construir la imagen para esa plataforma, por ejemplo:
 
 ```
-docker build --platform=linux/amd64 -t myapp .
+docker build --platform=linux/amd64 -t myapp:tag .
 ```
 
 Luego, súbela a tu registro, por ejemplo: 
