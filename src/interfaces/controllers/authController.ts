@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express'
 import { validationResult } from 'express-validator'
 import httpClient from '../services/httpClient'
 import validateRegister from '../middlewares/validateRegister'
+import validateLogin from '../middlewares/validateLogin'
 
 const router = Router()
 
@@ -29,7 +30,7 @@ router.post('/register', validateRegister, async (req: Request, res: Response) =
   }
 })
 
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', validateLogin, async (req: Request, res: Response) => {
   const { email, password } = req.body
 
   try {
