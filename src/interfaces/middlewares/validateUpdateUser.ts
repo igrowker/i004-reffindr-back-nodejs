@@ -1,35 +1,26 @@
 import { check, ValidationChain } from 'express-validator'
-// import { Request } from "express";
 
-const validateRegister: ValidationChain[] = [
+const validateUpdateUser: ValidationChain[] = [
   check('name')
+    .optional()
     .trim()
-    .notEmpty()
-    .withMessage('Debe ingresar su nombre')
     .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s[a-zA-ZÀ-ÿ\u00f1\u00d1]+)*$/)
     .withMessage('El nombre solo puede contener letras')
     .isLength({ min: 2, max: 50 })
     .withMessage('El nombre ingresado debe tener entre 2 y 50 letras.'),
 
   check('surname')
+    .optional()
     .trim()
-    .notEmpty()
-    .withMessage('Debe ingresar un apellido.')
     .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s[a-zA-ZÀ-ÿ\u00f1\u00d1]+)*$/)
     .withMessage('El apellido solo puede contener letras')
     .isLength({ min: 2, max: 50 })
     .withMessage('El apellido ingresado debe tener entre 2 y 50 letras.'),
 
-  check('email')
-    .notEmpty()
-    .withMessage('Debe ingresar un mail.')
-    .isEmail()
-    .withMessage('Debe ser un correo electrónico válido')
-    .normalizeEmail(),
+  check('email').optional().isEmail().withMessage('Debe ser un correo electrónico válido').normalizeEmail(),
 
   check('password')
-    .notEmpty()
-    .withMessage('Debe ingresar una contraseña.')
+    .optional()
     .isLength({ min: 8, max: 16 })
     .withMessage('La contraseña ingresada debe tener entre 8 y 16 caracteres.')
     .custom((value) => {
@@ -58,4 +49,4 @@ const validateRegister: ValidationChain[] = [
     }),
 ]
 
-export default validateRegister
+export default validateUpdateUser
