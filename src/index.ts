@@ -4,17 +4,10 @@ import propertyRoutes from './interfaces/routes/propertyRoutes'
 import { errorHandler } from './interfaces/middlewares/errorHandler'
 import userRoutes from './interfaces/routes/userRoutes'
 import 'dotenv/config'
-// import { Agent, setGlobalDispatcher } from 'undici'
 
 const { PORT } = process.env
 const app: Express = express()
-// const agent = new Agent({
-//   connect: {
-//     rejectUnauthorized: false
-//   }
-// })
 
-// setGlobalDispatcher(agent)
 app.use(express.json())
 
 app.use('/auth', authRoutes)
