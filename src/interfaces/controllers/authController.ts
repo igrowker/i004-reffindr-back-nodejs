@@ -34,9 +34,9 @@ router.post('/login', validateLogin, async (req: Request, res: Response) => {
   const { email, password } = req.body
 
   try {
-    const response = await httpClient.post('/users/login', {
-      email,
-      password,
+    const response = await httpClient.post('/Auth/Login', {
+      Email : email ,
+      Password : password,
     })
 
     return res.status(response.status).json(response.data)
@@ -46,5 +46,6 @@ router.post('/login', validateLogin, async (req: Request, res: Response) => {
       .json({ error: error.response?.data || 'Error interno del servidor' })
   }
 })
+
 
 export default router
