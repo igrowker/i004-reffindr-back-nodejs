@@ -11,7 +11,7 @@ const validateRegister: ValidationChain[] = [
     .isLength({ min: 2, max: 50 })
     .withMessage('El nombre ingresado debe tener entre 2 y 50 letras.'),
 
-  check('surname')
+  check('lastName')
     .trim()
     .notEmpty()
     .withMessage('Debe ingresar un apellido.')

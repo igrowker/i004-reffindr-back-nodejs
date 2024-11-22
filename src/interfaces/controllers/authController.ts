@@ -12,14 +12,15 @@ router.post('/register', validateRegister, async (req: Request, res: Response) =
     return res.status(400).json({ errors: errors.array() })
   }
 
-  const { name, surname, email, password } = req.body
+  const { roleId, name, lastName, email, password } = req.body
 
   try {
-    const response = await httpClient.post('/users/register', {
-      name,
-      surname,
-      email,
-      password,
+    const response = await httpClient.post('/Auth/SignUp', {
+      RoleId: roleId,
+      Name: name,
+      LastName: lastName,
+      Email: email,
+      Password: password,
     })
 
     return res.status(response.status).json(response.data)
@@ -31,21 +32,25 @@ router.post('/register', validateRegister, async (req: Request, res: Response) =
 })
 
 router.post('/login', validateLogin, async (req: Request, res: Response) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() })
+  }
+
   const { email, password } = req.body
 
   try {
     const response = await httpClient.post('/Auth/Login', {
-      Email : email ,
-      Password : password,
+      Email: email,
+      Password: password,
     })
 
-    return res.status(response.status).json(response.data)
+    return res.status(response.status).json({ token: response.data.token })
   } catch (error: any) {
     return res
       .status(error.response?.status || 500)
       .json({ error: error.response?.data || 'Error interno del servidor' })
   }
 })
-
 
 export default router
