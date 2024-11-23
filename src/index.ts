@@ -2,15 +2,19 @@ import express, { Express, Request, Response } from 'express'
 import authRoutes from './interfaces/routes/authRoutes'
 import propertyRoutes from './interfaces/routes/propertyRoutes'
 import { errorHandler } from './interfaces/middlewares/errorHandler'
+import userRoutes from './interfaces/routes/userRoutes'
+import cors from 'cors'
 import 'dotenv/config'
 
 const { PORT } = process.env
 const app: Express = express()
 
 app.use(express.json())
+app.use(cors())
 
 app.use('/auth', authRoutes)
 app.use('/properties', propertyRoutes)
+app.use('/users', userRoutes)
 
 app.use(errorHandler)
 
