@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from 'express'
-import setupSwagger from '../swagger/swagger'
+import setupSwagger from './swagger/swagger'
 
 import authRoutes from './interfaces/routes/authRoutes'
 import propertyRoutes from './interfaces/routes/propertyRoutes'
