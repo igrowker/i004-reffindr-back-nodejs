@@ -34,9 +34,13 @@ router.post('/register', validateRegister, async (req: Request, res: Response) =
 
     return res.status(response.status).json(response.data)
   } catch (error: any) {
-    return res
-      .status(error.response?.status || 500)
-      .json({ error: error.response?.data || 'Error interno del servidor' })
+    return res.status(error.response?.status).json(
+      new BaseResponse({
+        errors: ['Error al registrar el usuario.'],
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
   }
 })
 
