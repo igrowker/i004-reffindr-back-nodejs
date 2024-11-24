@@ -75,7 +75,7 @@ router.post('/login', validateLogin, async (req: Request, res: Response) => {
       new BaseResponse({
         errors: ['Credenciales incorrectas.'],
         hasErrors: true,
-        statusCode: res.statusCode,
+        statusCode: 401,
       })
     )
   }

@@ -1,0 +1,104 @@
+openapi: 3.0.0
+info:
+  title: Bff Node Reffindr
+  version: 0.0.1
+  description: Reffindr Node
+  contact:
+    name: Jack
+servers:
+  - url: http://localhost:3000
+    description: Local Server
+tags:
+  - name: Users
+    description: The users managing API
+components:
+  schemas:
+    UserRegister:
+      type: object
+      required:
+        - roleId
+        - name
+        - lastName
+        - email
+        - password
+      properties:
+        roleId:
+          type: number
+          description: The roleId of the User
+        name:
+          type: string
+          description: The name of the User
+        lastName:
+          type: string
+          description: The lastName of the User
+        email:
+          type: string
+          description: The email of the User
+        password:
+          type: string
+          description: The password of the User
+      example:
+        roleId: 1
+        name: John
+        lastName: Doe
+        email: john.doe@example.com
+        password: password
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+      responses:
+        200:
+          description: The user was successfully registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  email:
+                    type: string
+  /auth/login:
+    post:
+      summary: Login a user
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: The user was successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
