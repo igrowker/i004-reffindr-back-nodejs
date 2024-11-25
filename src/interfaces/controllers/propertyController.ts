@@ -7,7 +7,7 @@ import httpClient from '../services/httpClient'
 
 const router = Router()
 
-router.post('/properties/createProperty', validateCreateProperty, async (req: Request, res: Response) => {
+router.post('/createProperty', validateCreateProperty, async (req: Request, res: Response) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const errorsValidation = errors.array().map((error) => error.msg)
@@ -15,6 +15,18 @@ router.post('/properties/createProperty', validateCreateProperty, async (req: Re
     return res.status(400).json(
       new BaseResponse({
         errors: errorsValidation,
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
+  }
+
+  const { ownerEmail } = req.query
+
+  if (!ownerEmail || typeof ownerEmail !== 'string') {
+    return res.status(400).json(
+      new BaseResponse({
+        errors: ['El correo del propietario (ownerEmail) es obligatorio y debe ser un string.'],
         hasErrors: true,
         statusCode: res.statusCode,
       })
@@ -46,7 +58,7 @@ router.post('/properties/createProperty', validateCreateProperty, async (req: Re
   } = req.body
 
   try {
-    const response = await httpClient.post('/Property/PostProperty', {
+    const response = await httpClient.post('/Properties/PostProperty/', {
       CountryId: countryId,
       StateId: stateId,
       Title: title,
@@ -72,6 +84,7 @@ router.post('/properties/createProperty', validateCreateProperty, async (req: Re
         HasWarranty: hasWarranty,
         RangeSalary: rangeSalary,
       },
+      OwnerEmail: ownerEmail,
     })
 
     return res.status(response.status).json(response.data)

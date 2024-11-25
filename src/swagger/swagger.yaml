@@ -262,10 +262,17 @@ paths:
                     type: boolean
                   statusCode:
                     type: number
-  /properties/createProperty:
+  /properties/createProperty/:
     post:
       summary: Create a new property
       tags: [Properties]
+      parameters:
+        - name: ownerEmail
+          in: query
+          description: Email required
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -338,5 +345,3 @@ paths:
                     type: boolean
                   statusCode:
                     type: number
-security:
-  - bearerAuth: []
