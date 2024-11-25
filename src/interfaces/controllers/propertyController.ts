@@ -1,30 +1,104 @@
-import { Request, Response } from 'express'
+import { Request, Response, Router } from 'express'
+import { validationResult } from 'express-validator'
+
+import { BaseResponse } from '../../shared/utils/baseResponse'
+import validateCreateProperty from '../middlewares/validateCreateProperty'
 import httpClient from '../services/httpClient'
-import router from './authController'
 
-const BACKEND_URL = process.env.BACKEND_URL
+const router = Router()
 
-export const getProperties = async (req: Request, res: Response) => {
-    const response = await  httpClient.get(`${BACKEND_URL}/properties`, { params: req.query })
-    res.json(response.data)
-}
+router.post('/properties/createProperty', validateCreateProperty, async (req: Request, res: Response) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    const errorsValidation = errors.array().map((error) => error.msg)
 
-export const getPropertyById = async (req: Request, res: Response) => {
-      const { id } = req.params
-      const response = await httpClient.get(`${BACKEND_URL}/properties/${id}`)
-      res.json(response.data)
-  };
-  
+    return res.status(400).json(
+      new BaseResponse({
+        errors: errorsValidation,
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
+  }
 
-export const createProperty = async (req: Request, res: Response) => {
-    const response = await httpClient.post(`${BACKEND_URL}/properties`, req.body)
-    res.status(201).json(response.data)
-}
+  const {
+    countryId,
+    stateId,
+    title,
+    address,
+    environments,
+    bathrooms,
+    bedrooms,
+    seniority,
+    water,
+    gas,
+    surveillance,
+    electricity,
+    internet,
+    pool,
+    garage,
+    pets,
+    grill,
+    elevator,
+    terrace,
+    description,
+    requirementPostRequestDto: { isWorking, hasWarranty, rangeSalary },
+  } = req.body
 
-export const selectCandidates = async (req: Request, res: Response) => {
-      const { propertyId } = req.params
-      const response = await httpClient.post(`${BACKEND_URL}/select-candidates/${propertyId}`, req.body)
-      res.status(200).json(response.data)
-}
+  try {
+    const response = await httpClient.post('/Properties/PostProperty', {
+      CountryId: countryId,
+      StateId: stateId,
+      Title: title,
+      Address: address,
+      Environments: environments,
+      Bathrooms: bathrooms,
+      Bedrooms: bedrooms,
+      Seniority: seniority,
+      Water: water,
+      Gas: gas,
+      Surveillance: surveillance,
+      Electricity: electricity,
+      Internet: internet,
+      Pool: pool,
+      Garage: garage,
+      Pets: pets,
+      Grill: grill,
+      Elevator: elevator,
+      Terrace: terrace,
+      Description: description,
+      RequirementPostRequestDto: {
+        IsWorking: isWorking,
+        HasWarranty: hasWarranty,
+        RangeSalary: rangeSalary,
+      },
+    })
+
+    return res.status(response.status).json(response.data)
+  } catch (error: unknown) {
+    return res.status(400).json(
+      new BaseResponse({
+        errors: ['Error al registrar la propiedad.'],
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
+  }
+})
+
+router.get('/properties/getProperties', async (_req: Request, res: Response) => {
+  try {
+    const response = await httpClient.get('/Properties')
+    return res.status(response.status).json(response.data)
+  } catch (error: unknown) {
+    return res.status(404).json(
+      new BaseResponse({
+        errors: ['No se encontraron propiedades que coincidan con su búsqueda.'],
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
+  }
+})
 
 export default router

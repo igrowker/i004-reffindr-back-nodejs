@@ -1,9 +1,10 @@
-import { Router, Request, Response } from 'express'
+import { Request, Response, Router } from 'express'
 import { validationResult } from 'express-validator'
-import httpClient from '../services/httpClient'
-import validateRegister from '../middlewares/validateRegister'
-import validateLogin from '../middlewares/validateLogin'
+
 import { BaseResponse } from '../../shared/utils/baseResponse'
+import validateLogin from '../middlewares/validateLogin'
+import validateRegister from '../middlewares/validateRegister'
+import httpClient from '../services/httpClient'
 
 const router = Router()
 
@@ -33,10 +34,14 @@ router.post('/register', validateRegister, async (req: Request, res: Response) =
     })
 
     return res.status(response.status).json(response.data)
-  } catch (error: any) {
-    return res
-      .status(error.response?.status || 500)
-      .json({ error: error.response?.data || 'Error interno del servidor' })
+  } catch (error: unknown) {
+    return res.status(400).json(
+      new BaseResponse({
+        errors: ['Error al registrar el usuario.'],
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
   }
 })
 
@@ -70,8 +75,8 @@ router.post('/login', validateLogin, async (req: Request, res: Response) => {
         statusCode: res.statusCode,
       })
     )
-  } catch (error: any) {
-    return res.status(error.response?.status).json(
+  } catch (error: unknown) {
+    return res.status(400).json(
       new BaseResponse({
         errors: ['Credenciales incorrectas.'],
         hasErrors: true,
