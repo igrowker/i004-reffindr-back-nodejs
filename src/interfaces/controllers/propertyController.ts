@@ -46,7 +46,7 @@ router.post('/properties/createProperty', validateCreateProperty, async (req: Re
   } = req.body
 
   try {
-    const response = await httpClient.post('/Properties/PostProperty', {
+    const response = await httpClient.post('/Property/PostProperty', {
       CountryId: countryId,
       StateId: stateId,
       Title: title,

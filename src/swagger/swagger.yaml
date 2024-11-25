@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: Bff Node Reffindr
-  version: 0.0.1
+  title: Property Management API
+  version: 1.0.0
   description: Reffindr Node
   contact:
     name: Jack
@@ -10,8 +10,15 @@ servers:
     description: Local Server
 tags:
   - name: Users
-    description: The users managing API
+    description: Endpoints for user management
+  - name: Properties
+    description: Endpoints for property management
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     UserRegister:
       type: object
@@ -58,6 +65,138 @@ components:
       example:
         email: john.doe@example.com
         password: password
+    CreateProperty:
+      type: object
+      required:
+        - countryId
+        - stateId
+        - title
+        - address
+        - environments
+        - bathrooms
+        - bedrooms
+        - seniority
+        - water
+        - gas
+        - surveillance
+        - electricity
+        - internet
+        - pool
+        - garage
+        - pets
+        - grill
+        - elevator
+        - terrace
+        - description
+        - requirementPostRequestDto
+      properties:
+        countryId:
+          type: integer
+        stateId:
+          type: integer
+        title:
+          type: string
+        address:
+          type: string
+        environments:
+          type: integer
+        bathrooms:
+          type: integer
+        bedrooms:
+          type: integer
+        seniority:
+          type: integer
+        water:
+          type: boolean
+        gas:
+          type: boolean
+        surveillance:
+          type: boolean
+        electricity:
+          type: boolean
+        internet:
+          type: boolean
+        pool:
+          type: boolean
+        garage:
+          type: boolean
+        pets:
+          type: boolean
+        grill:
+          type: boolean
+        elevator:
+          type: boolean
+        terrace:
+          type: boolean
+        description:
+          type: string
+        requirementPostRequestDto:
+          type: object
+          required:
+            - isWorking
+            - hasWarranty
+            - rangeSalary
+          properties:
+            isWorking:
+              type: boolean
+            hasWarranty:
+              type: boolean
+            rangeSalary:
+              type: integer
+    Property:
+      type: object
+      properties:
+        id:
+          type: string
+        countryId:
+          type: integer
+        stateId:
+          type: integer
+        title:
+          type: string
+        address:
+          type: string
+        environments:
+          type: integer
+        bathrooms:
+          type: integer
+        bedrooms:
+          type: integer
+        seniority:
+          type: integer
+        water:
+          type: boolean
+        gas:
+          type: boolean
+        surveillance:
+          type: boolean
+        electricity:
+          type: boolean
+        internet:
+          type: boolean
+        pool:
+          type: boolean
+        garage:
+          type: boolean
+        pets:
+          type: boolean
+        grill:
+          type: boolean
+        elevator:
+          type: boolean
+        terrace:
+          type: boolean
+        description:
+          type: string
+        requirementPostRequestDto:
+          type: object
+          properties:
+            isWorking:
+              type: boolean
+            hasWarranty:
+              type: boolean
+            rangeSalary:
+              type: integer
 paths:
   /auth/register:
     post:
@@ -81,6 +220,17 @@ paths:
                     type: string
                   email:
                     type: string
+        409:
+          description: Conflict, email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
   /auth/login:
     post:
       summary: Login a user
@@ -112,3 +262,81 @@ paths:
                     type: boolean
                   statusCode:
                     type: number
+  /properties/createProperty:
+    post:
+      summary: Create a new property
+      tags: [Properties]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProperty'
+      responses:
+        201:
+          description: Property successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      message:
+                        type: string
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
+  /properties/getProperties:
+    get:
+      summary: Get properties
+      tags: [Properties]
+      responses:
+        200:
+          description: A list of properties
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Property'
+        404:
+          description: No properties found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
+security:
+  - bearerAuth: []
