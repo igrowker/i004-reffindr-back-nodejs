@@ -9,6 +9,7 @@ const router = Router()
 
 router.post('/createProperty', validateCreateProperty, async (req: Request, res: Response) => {
   const errors = validationResult(req)
+
   if (!errors.isEmpty()) {
     const errorsValidation = errors.array().map((error) => error.msg)
 
