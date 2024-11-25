@@ -52,5 +52,8 @@ COPY --from=build /usr/src/app/src ./src
 # Usa un usuario no root para ejecutar la aplicación por motivos de seguridad
 USER node
 
+# Exponer el puerto en el que escucha la aplicación
+EXPOSE 3000
+
 # Ejecuta la aplicación
 CMD ["node", "dist/index.js"]
