@@ -1,0 +1,24 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "develop" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: jamirgutierrezdelcarpio@gmail.com
+        password: dckr_pat_ibDd3Bz1Q2bXvLyO8d78fi3zGwI
+
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag dash977/node:latest
+
+    - name: Push the Docker image
+      run: docker push dash977/node:latest
