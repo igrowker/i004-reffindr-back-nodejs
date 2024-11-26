@@ -13,7 +13,7 @@ const httpClient = axios.create({
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0cmluZyIsIm5hbWUiOiJzdHJpbmciLCJzdWIiOiIxIiwicm9sZSI6IjEiLCJuYmYiOjE3MzI1Njk5MDgsImV4cCI6MTczMzAwMTkwOCwiaWF0IjoxNzMyNTY5OTA4LCJpc3MiOiJBdXRoSXNzdWVyIiwiYXVkIjoiVXNlcnNBdWRpZW5jZSJ9.aFHul-J0sAh_gGRJm_iu7DoXzVLazsgH8TPJ3SVirc15vAuWGPxIvur4968t5PaROoOL4SYfToOAfEdcFesYog`,
+    Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvbkBzbm93LmNvbSIsIm5hbWUiOiJKb24iLCJzdWIiOiI2Iiwicm9sZSI6IjEiLCJuYmYiOjE3MzI2MzY0NDUsImV4cCI6MTczMzA2ODQ0NSwiaWF0IjoxNzMyNjM2NDQ1LCJpc3MiOiJBdXRoSXNzdWVyIiwiYXVkIjoiVXNlcnNBdWRpZW5jZSJ9.dy6qM4zbzzqNqljv6-QAy2tYR4U8xzNg-LvsmHauYDHTSeHu3BR6GnieCT3fU4aGIz5ot-8N0flTv5RIy7gDHA`,
   },
   httpsAgent: agent,
 })
