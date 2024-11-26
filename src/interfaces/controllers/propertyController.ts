@@ -2,17 +2,13 @@ import { Request, Response, Router } from 'express'
 import { validationResult } from 'express-validator'
 
 import { BaseResponse } from '../../shared/utils/baseResponse'
+import { tokenMiddleware } from '../middlewares/tokenMiddleware'
 import validateCreateProperty from '../middlewares/validateCreateProperty'
 import httpClient from '../services/httpClient'
 
 const router = Router()
-router.post('/create-property', validateCreateProperty, async (req: Request, res: Response) => {
+router.post('/create-property', tokenMiddleware, validateCreateProperty, async (req: Request, res: Response) => {
   const errors = validationResult(req)
-
-  const token = req.headers.authorization
-
-  console.log('token', token)
-
   if (!errors.isEmpty()) {
     const errorsValidation = errors.array().map((error) => error.msg)
     return res.status(400).json(
@@ -89,7 +85,7 @@ router.post('/create-property', validateCreateProperty, async (req: Request, res
       {
         params: { ownerEmail },
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: req.headers['Authorization'],
         },
       }
     )
