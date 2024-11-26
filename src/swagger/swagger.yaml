@@ -220,17 +220,6 @@ paths:
                     type: string
                   email:
                     type: string
-        409:
-          description: Conflict, email already exists
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: string
   /auth/login:
     post:
       summary: Login a user
@@ -280,7 +269,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateProperty'
       responses:
-        201:
+        200:
           description: Property successfully created
           content:
             application/json:
@@ -302,21 +291,6 @@ paths:
                     type: boolean
                   statusCode:
                     type: number
-        400:
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: string
-                  hasErrors:
-                    type: boolean
-                  statusCode:
-                    type: number
   /properties/getProperties:
     get:
       summary: Get properties
@@ -330,18 +304,3 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Property'
-        404:
-          description: No properties found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: string
-                  hasErrors:
-                    type: boolean
-                  statusCode:
-                    type: number
