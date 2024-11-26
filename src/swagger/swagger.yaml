@@ -251,7 +251,7 @@ paths:
                     type: boolean
                   statusCode:
                     type: number
-  /properties/createProperty:
+  /properties/create-property:
     post:
       summary: Create a new property
       tags: [Properties]
@@ -291,7 +291,7 @@ paths:
                     type: boolean
                   statusCode:
                     type: number
-  /properties/getProperties:
+  /properties/get-properties:
     get:
       summary: Get properties
       tags: [Properties]

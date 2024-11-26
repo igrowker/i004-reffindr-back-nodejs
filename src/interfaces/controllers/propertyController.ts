@@ -6,9 +6,13 @@ import validateCreateProperty from '../middlewares/validateCreateProperty'
 import httpClient from '../services/httpClient'
 
 const router = Router()
-router.post('/createProperty', validateCreateProperty, async (req: Request, res: Response) => {
+router.post('/create-property', validateCreateProperty, async (req: Request, res: Response) => {
   const errors = validationResult(req)
-  console.log(`Comprobacion: ${req.headers.authorization}`)
+
+  const token = req.headers.authorization
+
+  console.log('token', token)
+
   if (!errors.isEmpty()) {
     const errorsValidation = errors.array().map((error) => error.msg)
     return res.status(400).json(
@@ -84,6 +88,9 @@ router.post('/createProperty', validateCreateProperty, async (req: Request, res:
       },
       {
         params: { ownerEmail },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     )
     return res.status(response.status).json(response.data)
@@ -99,9 +106,14 @@ router.post('/createProperty', validateCreateProperty, async (req: Request, res:
   }
 })
 
-router.get('/properties/getProperties', async (_req: Request, res: Response) => {
+router.get('/properties/get-properties', async (req: Request, res: Response) => {
   try {
-    const response = await httpClient.get('/Properties')
+    const { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title } =
+      req.query
+    const response = await httpClient.get('/Properties', {
+      params: { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title },
+    })
+
     return res.status(response.status).json(response.data)
   } catch (error: unknown) {
     return res.status(404).json(
