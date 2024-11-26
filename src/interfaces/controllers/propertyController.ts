@@ -102,16 +102,20 @@ router.post('/create-property', tokenMiddleware, validateCreateProperty, async (
   }
 })
 
-router.get('/properties/get-properties', async (req: Request, res: Response) => {
+router.get('/get-properties', tokenMiddleware, async (req: Request, res: Response) => {
   try {
     const { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title } =
       req.query
     const response = await httpClient.get('/Properties', {
       params: { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title },
+      headers: {
+        Authorization: req.headers['Authorization'],
+      },
     })
 
     return res.status(response.status).json(response.data)
   } catch (error: unknown) {
+    console.log(error)
     return res.status(404).json(
       new BaseResponse({
         errors: ['No se encontraron propiedades que coincidan con su búsqueda.'],
