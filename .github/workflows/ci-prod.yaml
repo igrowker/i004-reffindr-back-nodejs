@@ -14,7 +14,7 @@ on:
         options:
           - main
 jobs:
-  docker:
+  docker-build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -32,15 +32,10 @@ jobs:
       - name: Build Docker Image with Multiple Tags
         uses: docker/build-push-action@v6
         with:
-          push: false
-          load: true
+          context: .
+          push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:prod
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ steps.version.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.sha }}
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:buildcache,mode=max
-
-      - name: Push Docker Image with Prod Tag
-        run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:prod
-
