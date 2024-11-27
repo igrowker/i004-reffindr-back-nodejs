@@ -197,6 +197,7 @@ components:
               type: boolean
             rangeSalary:
               type: integer
+
 paths:
   /auth/register:
     post:
@@ -253,6 +254,8 @@ paths:
                     type: number
   /properties/create-property:
     post:
+      security:
+        - bearerAuth: []
       summary: Create a new property
       tags: [Properties]
       parameters:
@@ -293,8 +296,65 @@ paths:
                     type: number
   /properties/get-properties:
     get:
+      security:
+        - bearerAuth: []
       summary: Get properties
       tags: [Properties]
+      parameters:
+        - name: CountryId
+          in: query
+          description: Country ID
+          required: false
+          schema:
+            type: integer
+        - name: StateId
+          in: query
+          description: State ID
+          required: false
+          schema:
+            type: integer
+        - name: PriceMin
+          in: query
+          description: Minimum price
+          required: false
+          schema:
+            type: number
+        - name: PriceMax
+          in: query
+          description: Maximum price
+          required: false
+          schema:
+            type: number
+        - name: IsWorking
+          in: query
+          description: Is working
+          required: false
+          schema:
+            type: boolean
+        - name: HasWarranty
+          in: query
+          description: Has warranty
+          required: false
+          schema:
+            type: boolean
+        - name: RangeSalaryMin
+          in: query
+          description: Minimum salary range
+          required: false
+          schema:
+            type: number
+        - name: RangeSalaryMax
+          in: query
+          description: Maximum salary range
+          required: false
+          schema:
+            type: number
+        - name: Title
+          in: query
+          description: Title
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: A list of properties
