@@ -6,8 +6,8 @@ info:
   contact:
     name: Jack
 servers:
-  - url: http://localhost:3000
-    description: Local Server
+  - url: https://i004-reffindr-back-dotnet-dev.onrender.com/api
+    description: Render Server
 tags:
   - name: Users
     description: Endpoints for user management
