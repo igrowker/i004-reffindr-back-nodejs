@@ -90,3 +90,9 @@ jobs:
           fail-build: false
           severity-cutoff: high
           output-format: table
+
+      - name: Deploy to Render
+        uses: satak/webrequest-action@master
+        with:
+          url: ${{ secrets.RENDER_DEPLOY }}
+          method: GET

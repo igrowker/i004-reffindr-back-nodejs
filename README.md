@@ -1,3 +1,5 @@
+[![Develop CI/CD Pipeline](https://github.com/igrowker/i004-reffindr-back-nodejs/actions/workflows/ci-dev.yaml/badge.svg)](https://github.com/igrowker/i004-reffindr-back-nodejs/actions/workflows/ci-dev.yaml)
+
 Este es un proyecto de backend creado con **Node.js**, utilizando **TypeScript** para la programación y **Express** como framework de servidor. El proyecto está diseñado para servir como un API para interactuar con diferentes servicios.
 
 ## Características
