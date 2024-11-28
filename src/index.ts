@@ -3,6 +3,7 @@ import setupSwagger from './swagger/swagger'
 
 import authRoutes from './routes/authRoutes'
 import propertyRoutes from './routes/propertyRoutes'
+import notificationRoutes from './routes/notificationRoutes'
 import { errorHandler } from './middlewares/errorHandler'
 import userRoutes from './routes/userRoutes'
 
@@ -20,6 +21,7 @@ app.use(cors())
 app.use('/auth', authRoutes)
 app.use('/properties', propertyRoutes)
 app.use('/users', userRoutes)
+app.use(notificationRoutes)
 
 app.use(errorHandler)
 
