@@ -1,14 +1,14 @@
 import { Request, Response, Router } from 'express'
 
 import { BaseResponse } from '../../shared/utils/baseResponse'
-import { errorValidation } from '../middlewares/ErrorValidation'
 import validateLogin from '../middlewares/validateLogin'
 import validateRegister from '../middlewares/validateRegister'
+import { validationError } from '../middlewares/validationError'
 import httpClient from '../services/httpClient'
 
 const router = Router()
 
-router.post('/register', validateRegister, errorValidation, async (req: Request, res: Response) => {
+router.post('/register', validateRegister, validationError, async (req: Request, res: Response) => {
   const { roleId, name, lastName, email, password } = req.body
 
   try {
@@ -32,7 +32,7 @@ router.post('/register', validateRegister, errorValidation, async (req: Request,
   }
 })
 
-router.post('/login', validateLogin, errorValidation, async (req: Request, res: Response) => {
+router.post('/login', validateLogin, validationError, async (req: Request, res: Response) => {
   const { email, password } = req.body
 
   try {

@@ -1,9 +1,9 @@
 import { Request, Response, Router } from 'express'
 
 import { BaseResponse } from '../../shared/utils/baseResponse'
-import { errorValidation } from '../middlewares/ErrorValidation'
 import { tokenMiddleware } from '../middlewares/tokenMiddleware'
 import validateCreateProperty from '../middlewares/validateCreateProperty'
+import { validationError } from '../middlewares/validationError'
 import httpClient from '../services/httpClient'
 
 const router = Router()
@@ -11,7 +11,7 @@ router.post(
   '/create-property',
   tokenMiddleware,
   validateCreateProperty,
-  errorValidation,
+  validationError,
   async (req: Request, res: Response) => {
     const { ownerEmail } = req.query
     if (!ownerEmail || typeof ownerEmail !== 'string') {
