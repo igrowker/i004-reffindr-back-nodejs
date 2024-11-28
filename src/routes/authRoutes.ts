@@ -3,7 +3,7 @@ import { Router } from 'express'
 import { handleLogin, handleRegister } from '../controllers/userController'
 import validateLogin from '../middlewares/validateLogin'
 import validateRegister from '../middlewares/validateRegister'
-import handleValidationErrors from '../middlewares/validationErrorMiddleware'
+import { handleValidationErrors } from '../middlewares/validationErrorMiddleware'
 
 const router = Router()
 

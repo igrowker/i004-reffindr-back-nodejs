@@ -1,9 +1,13 @@
-import { Request, Response } from 'express'
+import { Request, Response, Router } from 'express'
 import { validationResult } from 'express-validator'
-import { BaseResponse } from '../shared/utils/baseResponse'
-import { createProperty, getProperties } from '../services/propertyService'
 
-export const createPropertyHandler = async (req: Request, res: Response) => {
+import { BaseResponse } from '../shared/utils/baseResponse'
+import { tokenMiddleware } from '../middlewares/tokenMiddleware'
+import validateCreateProperty from '../middlewares/validateCreateProperty'
+import httpClient from '../services/httpClient'
+
+const router = Router()
+router.post('/create-property', tokenMiddleware, validateCreateProperty, async (req: Request, res: Response) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const errorsValidation = errors.array().map((error) => error.msg)
@@ -15,7 +19,6 @@ export const createPropertyHandler = async (req: Request, res: Response) => {
       })
     )
   }
-
   const { ownerEmail } = req.query
   if (!ownerEmail || typeof ownerEmail !== 'string') {
     return res.status(400).json(
@@ -26,7 +29,6 @@ export const createPropertyHandler = async (req: Request, res: Response) => {
       })
     )
   }
-
   const {
     countryId,
     stateId,
@@ -50,33 +52,43 @@ export const createPropertyHandler = async (req: Request, res: Response) => {
     description,
     requirementPostRequestDto: { isWorking, hasWarranty, rangeSalary },
   } = req.body
-
-  const propertyData = {
-    countryId,
-    stateId,
-    title,
-    address,
-    environments,
-    bathrooms,
-    bedrooms,
-    seniority,
-    water,
-    gas,
-    surveillance,
-    electricity,
-    internet,
-    pool,
-    garage,
-    pets,
-    grill,
-    elevator,
-    terrace,
-    description,
-    requirementPostRequestDto: { isWorking, hasWarranty, rangeSalary },
-  }
-
   try {
-    const response = await createProperty(propertyData, ownerEmail as string, req.headers['Authorization'] as string)
+    const response = await httpClient.post(
+      '/Properties/PostProperty',
+      {
+        CountryId: countryId,
+        StateId: stateId,
+        Title: title,
+        Address: address,
+        Environments: environments,
+        Bathrooms: bathrooms,
+        Bedrooms: bedrooms,
+        Seniority: seniority,
+        Water: water,
+        Gas: gas,
+        Surveillance: surveillance,
+        Electricity: electricity,
+        Internet: internet,
+        Pool: pool,
+        Garage: garage,
+        Pets: pets,
+        Grill: grill,
+        Elevator: elevator,
+        Terrace: terrace,
+        Description: description,
+        RequirementPostRequestDto: {
+          IsWorking: isWorking,
+          HasWarranty: hasWarranty,
+          RangeSalary: rangeSalary,
+        },
+      },
+      {
+        params: { ownerEmail },
+        headers: {
+          Authorization: req.headers['Authorization'],
+        },
+      }
+    )
     return res.status(response.status).json(response.data)
   } catch (error: unknown) {
     console.error(error)
@@ -88,17 +100,19 @@ export const createPropertyHandler = async (req: Request, res: Response) => {
       })
     )
   }
-}
+})
 
-export const getPropertiesHandler = async (req: Request, res: Response) => {
+router.get('/get-properties', tokenMiddleware, async (req: Request, res: Response) => {
   try {
     const { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title } =
       req.query
+    const response = await httpClient.get('/Properties', {
+      params: { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title },
+      headers: {
+        Authorization: req.headers['Authorization'],
+      },
+    })
 
-    const response = await getProperties(
-      { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title },
-      req.headers['Authorization'] as string
-    )
     return res.status(response.status).json(response.data)
   } catch (error: unknown) {
     console.log(error)
@@ -110,4 +124,6 @@ export const getPropertiesHandler = async (req: Request, res: Response) => {
       })
     )
   }
-}
+})
+
+export default router

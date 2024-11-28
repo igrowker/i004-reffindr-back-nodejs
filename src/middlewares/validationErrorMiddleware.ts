@@ -1,21 +1,19 @@
-import { NextFunction, Request, Response } from 'express'
-import { validationResult } from 'express-validator'
-import { BaseResponse } from '../shared/utils/baseResponse'
+import { Request, Response, NextFunction } from 'express';
+import { validationResult } from 'express-validator';
+import { BaseResponse } from '../shared/utils/baseResponse';
 
-const handleValidationErrors = (req: Request, res: Response, next: NextFunction): void => {
-  const errors = validationResult(req)
+export const handleValidationErrors = (req: Request, res: Response, next: NextFunction): void | Response => {
+  const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
-    const errorsValidation = errors.array().map((error) => error.msg)
-    res.status(400).json(
+    const errorsValidation = errors.array().map((error) => error.msg);
+    return res.status(400).json(
       new BaseResponse({
         errors: errorsValidation,
         hasErrors: true,
-        statusCode: 400,
+        statusCode: res.statusCode,
       })
-    )
-    return
+    );
   }
   next()
 }
-
-export default handleValidationErrors

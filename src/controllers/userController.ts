@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
+import { Request, Response } from 'express'
+
 import * as userService from '../services/userService'
 import { BaseResponse } from '../shared/utils/baseResponse'
-
 
 export const handleRegister = async (req: Request, res: Response) => {
   const { roleId, name, lastName, email, password } = req.body
@@ -52,35 +52,35 @@ export const handleLogin = async (req: Request, res: Response) => {
 }
 
 export const getUser = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { id } = req.params
 
   try {
-    const user = await userService.getUserById(id);
-    res.status(200).json(user);
+    const user = await userService.getUserById(id)
+    res.status(200).json(user)
   } catch (error: any) {
-    res.status(500).json({ error: error.message || 'Error fetching user' });
+    res.status(500).json({ error: error.message || 'Error fetching user' })
   }
-};
+}
 
 export const updateUser = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const userData = req.body;
+  const { id } = req.params
+  const userData = req.body
 
   try {
-    const updatedUser = await userService.updateUserById(id, userData);
-    res.status(200).json(updatedUser);
+    const updatedUser = await userService.updateUserById(id, userData)
+    res.status(200).json(updatedUser)
   } catch (error: any) {
-    res.status(500).json({ error: error.message || 'Error updating user' });
+    res.status(500).json({ error: error.message || 'Error updating user' })
   }
-};
+}
 
 export const deleteUser = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { id } = req.params
 
   try {
-    const result = await userService.deleteUserById(id);
-    res.status(200).json(result);
+    const result = await userService.deleteUserById(id)
+    res.status(200).json(result)
   } catch (error: any) {
-    res.status(500).json({ error: error.message || 'Error deleting user' });
+    res.status(500).json({ error: error.message || 'Error deleting user' })
   }
-};
+}
