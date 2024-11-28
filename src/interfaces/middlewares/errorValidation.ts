@@ -3,7 +3,7 @@ import { validationResult } from 'express-validator'
 
 import { BaseResponse } from '../../shared/utils/baseResponse'
 
-export const ErrorValidation = (req: Request, res: Response, next: NextFunction) => {
+export const errorValidation = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const errorsValidation = errors.array().map((error) => error.msg)
