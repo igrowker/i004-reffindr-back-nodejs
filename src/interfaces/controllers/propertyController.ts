@@ -1,24 +1,14 @@
 import { Request, Response, Router } from 'express'
-import { validationResult } from 'express-validator'
 
 import { BaseResponse } from '../../shared/utils/baseResponse'
 import { tokenMiddleware } from '../middlewares/tokenMiddleware'
 import validateCreateProperty from '../middlewares/validateCreateProperty'
 import httpClient from '../services/httpClient'
+import { ErrorValidation } from '../middlewares/ErrorValidation'
 
 const router = Router()
-router.post('/create-property', tokenMiddleware, validateCreateProperty, async (req: Request, res: Response) => {
-  const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    const errorsValidation = errors.array().map((error) => error.msg)
-    return res.status(400).json(
-      new BaseResponse({
-        errors: errorsValidation,
-        hasErrors: true,
-        statusCode: res.statusCode,
-      })
-    )
-  }
+router.post('/create-property', tokenMiddleware, validateCreateProperty, ErrorValidation, async (req: Request, res: Response) => {
+  
   const { ownerEmail } = req.query
   if (!ownerEmail || typeof ownerEmail !== 'string') {
     return res.status(400).json(
