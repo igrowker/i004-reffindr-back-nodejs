@@ -3,7 +3,9 @@ import setupSwagger from './swagger/swagger'
 
 import authRoutes from './routes/authRoutes'
 import propertyRoutes from './routes/propertyRoutes'
-import { errorHandler } from './middlewares/errorHandler'
+import applicationRoutes from './routes/applicationRoutes'
+import { handleValidationErrors } from './middlewares/validationErrorMiddleware'
+import { globalErrorHandler } from './middlewares/errorHandler'
 import userRoutes from './routes/userRoutes'
 
 import cors from 'cors'
@@ -17,11 +19,14 @@ app.use(express.json())
 setupSwagger(app)
 app.use(cors())
 
+app.use(handleValidationErrors) 
+
 app.use('/auth', authRoutes)
 app.use('/properties', propertyRoutes)
 app.use('/users', userRoutes)
+app.use('/application', applicationRoutes)
 
-app.use(errorHandler)
+app.use(globalErrorHandler)
 
 app.get('/', (_req: Request, res: Response) => {
   res.send('Express + TypeScript Server')
