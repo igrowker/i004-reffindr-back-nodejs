@@ -2,16 +2,15 @@ import { Request, Response, Router } from 'express'
 import { validationResult } from 'express-validator'
 
 import { BaseResponse } from '../../shared/utils/baseResponse'
+import { tokenMiddleware } from '../middlewares/tokenMiddleware'
 import validateCreateProperty from '../middlewares/validateCreateProperty'
 import httpClient from '../services/httpClient'
 
 const router = Router()
-
-router.post('/properties/createProperty', validateCreateProperty, async (req: Request, res: Response) => {
+router.post('/create-property', tokenMiddleware, validateCreateProperty, async (req: Request, res: Response) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const errorsValidation = errors.array().map((error) => error.msg)
-
     return res.status(400).json(
       new BaseResponse({
         errors: errorsValidation,
@@ -20,7 +19,16 @@ router.post('/properties/createProperty', validateCreateProperty, async (req: Re
       })
     )
   }
-
+  const { ownerEmail } = req.query
+  if (!ownerEmail || typeof ownerEmail !== 'string') {
+    return res.status(400).json(
+      new BaseResponse({
+        errors: ['El correo del propietario (ownerEmail) es obligatorio y debe ser un string.'],
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
+  }
   const {
     countryId,
     stateId,
@@ -44,38 +52,46 @@ router.post('/properties/createProperty', validateCreateProperty, async (req: Re
     description,
     requirementPostRequestDto: { isWorking, hasWarranty, rangeSalary },
   } = req.body
-
   try {
-    const response = await httpClient.post('/Properties/PostProperty', {
-      CountryId: countryId,
-      StateId: stateId,
-      Title: title,
-      Address: address,
-      Environments: environments,
-      Bathrooms: bathrooms,
-      Bedrooms: bedrooms,
-      Seniority: seniority,
-      Water: water,
-      Gas: gas,
-      Surveillance: surveillance,
-      Electricity: electricity,
-      Internet: internet,
-      Pool: pool,
-      Garage: garage,
-      Pets: pets,
-      Grill: grill,
-      Elevator: elevator,
-      Terrace: terrace,
-      Description: description,
-      RequirementPostRequestDto: {
-        IsWorking: isWorking,
-        HasWarranty: hasWarranty,
-        RangeSalary: rangeSalary,
+    const response = await httpClient.post(
+      '/Properties/PostProperty',
+      {
+        CountryId: countryId,
+        StateId: stateId,
+        Title: title,
+        Address: address,
+        Environments: environments,
+        Bathrooms: bathrooms,
+        Bedrooms: bedrooms,
+        Seniority: seniority,
+        Water: water,
+        Gas: gas,
+        Surveillance: surveillance,
+        Electricity: electricity,
+        Internet: internet,
+        Pool: pool,
+        Garage: garage,
+        Pets: pets,
+        Grill: grill,
+        Elevator: elevator,
+        Terrace: terrace,
+        Description: description,
+        RequirementPostRequestDto: {
+          IsWorking: isWorking,
+          HasWarranty: hasWarranty,
+          RangeSalary: rangeSalary,
+        },
       },
-    })
-
+      {
+        params: { ownerEmail },
+        headers: {
+          Authorization: req.headers['Authorization'],
+        },
+      }
+    )
     return res.status(response.status).json(response.data)
   } catch (error: unknown) {
+    console.error(error)
     return res.status(400).json(
       new BaseResponse({
         errors: ['Error al registrar la propiedad.'],
@@ -86,11 +102,20 @@ router.post('/properties/createProperty', validateCreateProperty, async (req: Re
   }
 })
 
-router.get('/properties/getProperties', async (_req: Request, res: Response) => {
+router.get('/get-properties', tokenMiddleware, async (req: Request, res: Response) => {
   try {
-    const response = await httpClient.get('/Properties')
+    const { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title } =
+      req.query
+    const response = await httpClient.get('/Properties', {
+      params: { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title },
+      headers: {
+        Authorization: req.headers['Authorization'],
+      },
+    })
+
     return res.status(response.status).json(response.data)
   } catch (error: unknown) {
+    console.log(error)
     return res.status(404).json(
       new BaseResponse({
         errors: ['No se encontraron propiedades que coincidan con su búsqueda.'],

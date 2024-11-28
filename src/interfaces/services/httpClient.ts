@@ -1,12 +1,12 @@
 import axios from 'axios'
-import https from 'https';
 import 'dotenv/config'
+import https from 'https'
 
 const { BACKEND_URL } = process.env
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
-});
+})
 
 const httpClient = axios.create({
   baseURL: BACKEND_URL,
@@ -15,9 +15,7 @@ const httpClient = axios.create({
     'Content-Type': 'application/json',
   },
   httpsAgent: agent,
-
 })
-
 
 httpClient.interceptors.response.use(
   (response) => response,
@@ -25,11 +23,10 @@ httpClient.interceptors.response.use(
     return Promise.reject({
       response: {
         status: error.response?.status || 500,
-        data: error.response?.data || { message: "Internal Server Error." },
+        data: error.response?.data || { message: 'Internal Server Error.' },
       },
-      
-    });
+    })
   }
-);
+)
 
 export default httpClient
