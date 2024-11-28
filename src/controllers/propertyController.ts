@@ -1,7 +1,8 @@
 import { Request, Response } from 'express'
 import { validationResult } from 'express-validator'
-import { BaseResponse } from '../shared/utils/baseResponse'
+
 import { createProperty, getProperties } from '../services/propertyService'
+import { BaseResponse } from '../shared/utils/baseResponse'
 
 export const createPropertyHandler = async (req: Request, res: Response) => {
   const errors = validationResult(req)
@@ -77,7 +78,7 @@ export const createPropertyHandler = async (req: Request, res: Response) => {
 
   try {
     const response = await createProperty(propertyData, ownerEmail as string, req.headers['Authorization'] as string)
-    return res.status(response.status).json(response.data)
+    return res.status(response.statusCode).json(response.data)
   } catch (error: unknown) {
     console.error(error)
     return res.status(400).json(
@@ -99,7 +100,7 @@ export const getPropertiesHandler = async (req: Request, res: Response) => {
       { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title },
       req.headers['Authorization'] as string
     )
-    return res.status(response.status).json(response.data)
+    return res.status(response.statusCode).json(response.data)
   } catch (error: unknown) {
     console.log(error)
     return res.status(404).json(

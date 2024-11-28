@@ -1,5 +1,3 @@
-import { AxiosResponse } from 'axios'
-
 import httpClient from './httpClient'
 
 interface PropertyData {
@@ -30,53 +28,76 @@ interface PropertyData {
   }
 }
 
+interface ApiResponse<T> {
+  data: T
+  statusCode: number
+  message?: string
+}
+
 export const createProperty = async (
   propertyData: PropertyData,
   ownerEmail: string,
   authorization: string
-): Promise<AxiosResponse> => {
-  if (!ownerEmail || typeof ownerEmail !== 'string') {
-    throw new Error('El correo del propietario (ownerEmail) es obligatorio y debe ser un string.')
-  }
-
-  const response = await httpClient.post(
-    '/Properties/PostProperty',
-    {
-      CountryId: propertyData.countryId,
-      StateId: propertyData.stateId,
-      Title: propertyData.title,
-      Address: propertyData.address,
-      Environments: propertyData.environments,
-      Bathrooms: propertyData.bathrooms,
-      Bedrooms: propertyData.bedrooms,
-      Seniority: propertyData.seniority,
-      Water: propertyData.water,
-      Gas: propertyData.gas,
-      Surveillance: propertyData.surveillance,
-      Electricity: propertyData.electricity,
-      Internet: propertyData.internet,
-      Pool: propertyData.pool,
-      Garage: propertyData.garage,
-      Pets: propertyData.pets,
-      Grill: propertyData.grill,
-      Elevator: propertyData.elevator,
-      Terrace: propertyData.terrace,
-      Description: propertyData.description,
-      RequirementPostRequestDto: propertyData.requirementPostRequestDto,
-    },
-    {
-      params: { ownerEmail },
-      headers: { Authorization: authorization },
+): Promise<ApiResponse<any>> => {
+  try {
+    if (!ownerEmail || typeof ownerEmail !== 'string') {
+      throw new Error('El correo del propietario (ownerEmail) es obligatorio y debe ser un string.')
     }
-  )
 
-  return response
+    const { data, status } = await httpClient.post(
+      '/Properties/PostProperty',
+      {
+        CountryId: propertyData.countryId,
+        StateId: propertyData.stateId,
+        Title: propertyData.title,
+        Address: propertyData.address,
+        Environments: propertyData.environments,
+        Bathrooms: propertyData.bathrooms,
+        Bedrooms: propertyData.bedrooms,
+        Seniority: propertyData.seniority,
+        Water: propertyData.water,
+        Gas: propertyData.gas,
+        Surveillance: propertyData.surveillance,
+        Electricity: propertyData.electricity,
+        Internet: propertyData.internet,
+        Pool: propertyData.pool,
+        Garage: propertyData.garage,
+        Pets: propertyData.pets,
+        Grill: propertyData.grill,
+        Elevator: propertyData.elevator,
+        Terrace: propertyData.terrace,
+        Description: propertyData.description,
+        RequirementPostRequestDto: propertyData.requirementPostRequestDto,
+      },
+      {
+        params: { ownerEmail },
+        headers: { Authorization: authorization },
+      }
+    )
+
+    return {
+      data,
+      statusCode: status,
+      message: 'Property created successfully',
+    }
+  } catch (error: any) {
+    throw error
+  }
 }
 
-export const getProperties = async (filters: any, authorization: string): Promise<AxiosResponse> => {
-  const response = await httpClient.get('/Properties', {
-    params: filters,
-    headers: { Authorization: authorization },
-  })
-  return response
+export const getProperties = async (filters: any, authorization: string): Promise<ApiResponse<any[]>> => {
+  try {
+    const { data, status } = await httpClient.get('/Properties', {
+      params: filters,
+      headers: { Authorization: authorization },
+    })
+
+    return {
+      data,
+      statusCode: status,
+      message: 'Properties fetched successfully',
+    }
+  } catch (error: any) {
+    throw error
+  }
 }
