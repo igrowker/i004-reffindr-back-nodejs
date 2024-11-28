@@ -1,6 +1,6 @@
 import { check, ValidationChain } from 'express-validator'
 
-const validateUpdateUser: ValidationChain[] = [
+export const validateUpdateUser: ValidationChain[] = [
   check('name')
     .optional()
     .trim()
@@ -48,5 +48,3 @@ const validateUpdateUser: ValidationChain[] = [
       return true
     }),
 ]
-
-export default validateUpdateUser

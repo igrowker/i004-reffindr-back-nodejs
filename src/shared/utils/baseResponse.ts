@@ -1,12 +1,13 @@
-interface IBaseResponse<T> {
-  data?: T
+export class BaseResponse {
+  data: any
   errors: string[]
   hasErrors: boolean
   statusCode: number
-}
 
-export class BaseResponse<T> {
-  constructor(response: IBaseResponse<T>) {
-    return response
+  constructor({ data, errors, hasErrors, statusCode }: any) {
+    this.data = data || null
+    this.errors = errors || []
+    this.hasErrors = hasErrors || false
+    this.statusCode = statusCode || 200
   }
 }

@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express'
 import { validationResult } from 'express-validator'
 
-import { BaseResponse } from '../../shared/utils/baseResponse'
+import { BaseResponse } from '../shared/utils/baseResponse'
 import { tokenMiddleware } from '../middlewares/tokenMiddleware'
 import validateCreateProperty from '../middlewares/validateCreateProperty'
 import httpClient from '../services/httpClient'

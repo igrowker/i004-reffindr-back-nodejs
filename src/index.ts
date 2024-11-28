@@ -1,10 +1,10 @@
 import express, { Express, Request, Response } from 'express'
 import setupSwagger from './swagger/swagger'
 
-import authRoutes from './interfaces/routes/authRoutes'
-import propertyRoutes from './interfaces/routes/propertyRoutes'
-import { errorHandler } from './interfaces/middlewares/errorHandler'
-import userRoutes from './interfaces/routes/userRoutes'
+import authRoutes from './routes/authRoutes'
+import propertyRoutes from './routes/propertyRoutes'
+import { errorHandler } from './middlewares/errorHandler'
+import userRoutes from './routes/userRoutes'
 
 import cors from 'cors'
 
