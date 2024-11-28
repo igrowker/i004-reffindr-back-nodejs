@@ -1,27 +1,14 @@
 import { Request, Response, Router } from 'express'
-import { validationResult } from 'express-validator'
 
 import { BaseResponse } from '../../shared/utils/baseResponse'
+import { ErrorValidation } from '../middlewares/ErrorValidation'
 import validateLogin from '../middlewares/validateLogin'
 import validateRegister from '../middlewares/validateRegister'
 import httpClient from '../services/httpClient'
 
 const router = Router()
 
-router.post('/register', validateRegister, async (req: Request, res: Response) => {
-  const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    const errorsValidation = errors.array().map((error) => error.msg)
-
-    return res.status(400).json(
-      new BaseResponse({
-        errors: errorsValidation,
-        hasErrors: true,
-        statusCode: res.statusCode,
-      })
-    )
-  }
-
+router.post('/register', validateRegister, ErrorValidation, async (req: Request, res: Response) => {
   const { roleId, name, lastName, email, password } = req.body
 
   try {
@@ -45,20 +32,7 @@ router.post('/register', validateRegister, async (req: Request, res: Response) =
   }
 })
 
-router.post('/login', validateLogin, async (req: Request, res: Response) => {
-  const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    const errorsValidation = errors.array().map((error) => error.msg)
-
-    return res.status(400).json(
-      new BaseResponse({
-        errors: errorsValidation,
-        hasErrors: true,
-        statusCode: res.statusCode,
-      })
-    )
-  }
-
+router.post('/login', validateLogin, ErrorValidation, async (req: Request, res: Response) => {
   const { email, password } = req.body
 
   try {
