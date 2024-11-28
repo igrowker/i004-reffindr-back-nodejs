@@ -5,6 +5,8 @@ export const createApplication = async (propertyId: number) => {
   try {
     const { data, status } = await httpClient.post('/Application', {
       PropertyId: propertyId,
+    }, {
+      headers: {Authorization: 'Bearer ${authorization}'}
     })
 
     return new BaseResponse({
@@ -39,5 +41,19 @@ export const getApplicationsByProperty = async (propertyId: number) => {
       hasErrors: true,
       statusCode: 500,
     })
+  }
+}
+
+export const getApplicationsByUser = async (userId: number) => {
+  try {
+    const { data, status } = await httpClient.get(`/Application/User/${userId}`)
+    return {
+      data,
+      statusCode: status,
+      message: 'Applications fetched successfully'
+    }
+  } catch (error: any) {
+    console.error(error)
+    throw new Error(error.response?.data?.message || 'Failed to fetch applications for user')
   }
 }

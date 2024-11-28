@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { createApplication, getApplicationsByProperty } from '../services/applicationService'
+import { createApplication, getApplicationsByProperty, getApplicationsByUser } from '../services/applicationService'
 import { BaseResponse } from '../shared/utils/baseResponse'
 
 export const createApplicationHandler = async (req: Request, res: Response) => {
@@ -49,5 +49,26 @@ export const getApplicationsByPropertyHandler = async (req: Request, res: Respon
         statusCode: 500,
       })
     )
+  }
+}
+
+export const getApplicationsByUserHandler = async (req: Request, res: Response) => {
+  const { userId } = req.params 
+
+  try {
+    const response = await getApplicationsByUser(+userId)
+    return res.status(response.statusCode).json(new BaseResponse({
+      data: response.data,
+      errors: [],
+      hasErrors: false,
+      statusCode: response.statusCode
+    }))
+  } catch (error: any) {
+    return res.status(error.statusCode || 500).json(new BaseResponse({
+      data: null,
+      errors: [error.message || 'Internal Server Error'],
+      hasErrors: true,
+      statusCode: error.statusCode || 500
+    }))
   }
 }
