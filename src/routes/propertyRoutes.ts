@@ -4,10 +4,12 @@ import { createPropertyHandler, getPropertiesHandler } from '../controllers/prop
 import { tokenMiddleware } from '../middlewares/tokenMiddleware'
 import validateCreateProperty from '../middlewares/validateCreateProperty'
 import { validateOwnerEmail } from '../middlewares/validateOwnerEmail'
+import { handleValidationErrors } from '../middlewares/validationErrorMiddleware'
+
 
 const router = Router()
 
-router.post('/create-property', tokenMiddleware, validateOwnerEmail, validateCreateProperty, createPropertyHandler)
+router.post('/create-property', tokenMiddleware, validateOwnerEmail, validateCreateProperty, handleValidationErrors, createPropertyHandler)
 
 router.get('/get-properties', tokenMiddleware, getPropertiesHandler)
 

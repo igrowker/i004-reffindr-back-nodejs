@@ -1,22 +1,9 @@
 import { Request, Response } from 'express'
-import { validationResult } from 'express-validator'
 
 import { createProperty, getProperties } from '../services/propertyService'
 import { BaseResponse } from '../shared/utils/baseResponse'
 
 export const createPropertyHandler = async (req: Request, res: Response) => {
-  const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    const errorsValidation = errors.array().map((error) => error.msg)
-    return res.status(400).json(
-      new BaseResponse({
-        errors: errorsValidation,
-        hasErrors: true,
-        statusCode: res.statusCode,
-      })
-    )
-  }
-
   const {
     countryId,
     stateId,
@@ -79,6 +66,7 @@ export const createPropertyHandler = async (req: Request, res: Response) => {
     )
   }
 }
+
 
 export const getPropertiesHandler = async (req: Request, res: Response) => {
   try {
