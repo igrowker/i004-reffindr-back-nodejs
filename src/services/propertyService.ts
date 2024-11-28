@@ -40,10 +40,6 @@ export const createProperty = async (
   authorization: string
 ): Promise<ApiResponse<any>> => {
   try {
-    if (!ownerEmail || typeof ownerEmail !== 'string') {
-      throw new Error('El correo del propietario (ownerEmail) es obligatorio y debe ser un string.')
-    }
-
     const { data, status } = await httpClient.post(
       '/Properties/PostProperty',
       {

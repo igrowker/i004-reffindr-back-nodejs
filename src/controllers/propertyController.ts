@@ -17,17 +17,6 @@ export const createPropertyHandler = async (req: Request, res: Response) => {
     )
   }
 
-  const { ownerEmail } = req.query
-  if (!ownerEmail || typeof ownerEmail !== 'string') {
-    return res.status(400).json(
-      new BaseResponse({
-        errors: ['El correo del propietario (ownerEmail) es obligatorio y debe ser un string.'],
-        hasErrors: true,
-        statusCode: res.statusCode,
-      })
-    )
-  }
-
   const {
     countryId,
     stateId,
@@ -77,7 +66,7 @@ export const createPropertyHandler = async (req: Request, res: Response) => {
   }
 
   try {
-    const response = await createProperty(propertyData, ownerEmail as string, req.headers['Authorization'] as string)
+    const response = await createProperty(propertyData, req.query.ownerEmail as string, req.headers['Authorization'] as string)
     return res.status(response.statusCode).json(response.data)
   } catch (error: unknown) {
     console.error(error)
