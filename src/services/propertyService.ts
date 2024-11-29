@@ -92,33 +92,29 @@ export const getProperties = async (
     RangeSalaryMin?: number;
     RangeSalaryMax?: number;
     Title?: string;
-  } = {}, // Default to empty object for all properties.
+  } = {}, 
   authorization: string
 ): Promise<BaseResponse> => {
-  try {
     if (!authorization) {
-      throw new Error('Authorization header is required.');
+      return new BaseResponse({
+        errors: ['Authorization header is required.'],
+        hasErrors: true,
+        statusCode: 401, 
+      });
     }
-
-    // Fetch properties from the .NET backend
-    const { data, status } = await httpClient.get('/Properties', {
-      params: filters,
-      headers: { Authorization: authorization },
-    });
-
-    return new BaseResponse({
-      data,
-      statusCode: status,
-      message: 'Properties fetched successfully',
-    });
-  } catch (error: any) {
-    // Use the globalErrorHandler and BaseResponse to handle errors
-    const status = error.response?.status || 500;
-    const message = error.response?.data?.message || 'Failed to fetch properties.';
-    throw new BaseResponse({
-      errors: [message],
-      hasErrors: true,
-      statusCode: status,
-    });
-  }
-};
+  
+    try {
+      const { data, status } = await httpClient.get('/Properties', {
+        params: filters,
+        headers: { Authorization: authorization },
+      });
+  
+      return new BaseResponse({
+        data,
+        statusCode: status,
+        message: 'Properties fetched successfully',
+      });
+    } catch (error: any) {
+      throw error;
+    }
+  };
