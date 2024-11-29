@@ -1,4 +1,6 @@
 import httpClient from './httpClient'
+import { BaseResponse } from '../shared/utils/baseResponse';
+
 
 interface PropertyData {
   countryId: number
@@ -79,21 +81,7 @@ export const createProperty = async (
   }
 }
 
-export const getAllProperties = async (filters: any, authorization: string): Promise<ApiResponse<any[]>> => {
-  const { data, status } = await httpClient.get('/Properties', {
-    params: filters,
-    headers: { Authorization: authorization },
-  })
-
-  return {
-    data,
-    statusCode: status,
-    message: 'Properties fetched successfully',
-  }
-}
-
-
-export const getFilteredProperties = async (
+export const getProperties = async (
   filters: {
     CountryId?: number;
     StateId?: number;
@@ -104,21 +92,33 @@ export const getFilteredProperties = async (
     RangeSalaryMin?: number;
     RangeSalaryMax?: number;
     Title?: string;
-  },
+  } = {}, // Default to empty object for all properties.
   authorization: string
-): Promise<ApiResponse<any[]>> => {
+): Promise<BaseResponse> => {
   try {
-    const {
-      CountryId,
-      StateId,
-      PriceMin,
-      PriceMax,
-      IsWorking,
-      HasWarranty,
-      RangeSalaryMin,
-      RangeSalaryMax,
-      Title,
-    } = filters;
-  } catch {
+    if (!authorization) {
+      throw new Error('Authorization header is required.');
+    }
 
+    // Fetch properties from the .NET backend
+    const { data, status } = await httpClient.get('/Properties', {
+      params: filters,
+      headers: { Authorization: authorization },
+    });
+
+    return new BaseResponse({
+      data,
+      statusCode: status,
+      message: 'Properties fetched successfully',
+    });
+  } catch (error: any) {
+    // Use the globalErrorHandler and BaseResponse to handle errors
+    const status = error.response?.status || 500;
+    const message = error.response?.data?.message || 'Failed to fetch properties.';
+    throw new BaseResponse({
+      errors: [message],
+      hasErrors: true,
+      statusCode: status,
+    });
   }
+};

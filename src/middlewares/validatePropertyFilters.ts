@@ -34,6 +34,8 @@ const validatePropertyFilters: ValidationChain[] = [
       }
       return true
     }),
+    check('Title').optional().isString().withMessage('Title debe ser una cadena de texto.'),
+
 ]
 
 export default validatePropertyFilters

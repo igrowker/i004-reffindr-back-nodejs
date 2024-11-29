@@ -61,21 +61,9 @@ export const createPropertyHandler = async (req: Request, res: Response) => {
 }
 
 export const getPropertiesHandler = async (req: Request, res: Response) => {
-  const { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title } =
-    req.query
-
-  const response = await getProperties(
-    { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title },
-    req.headers['Authorization'] as string
-  )
-
-  return res.status(response.statusCode).json(response.data)
-}
-
-export const getFilteredPropertiesHandler = async (req: Request, res: Response) => {
   const filters = req.query
   const authorization = req.headers['Authorization'] as string
 
   const response = await getProperties(filters, authorization)
-  return res.status(response.statusCode).json(response.data)
+  return res.status(response.statusCode).json(response)
 }
