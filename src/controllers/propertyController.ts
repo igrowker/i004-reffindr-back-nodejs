@@ -71,3 +71,11 @@ export const getPropertiesHandler = async (req: Request, res: Response) => {
 
   return res.status(response.statusCode).json(response.data)
 }
+
+export const getFilteredPropertiesHandler = async (req: Request, res: Response) => {
+  const filters = req.query
+  const authorization = req.headers['Authorization'] as string
+
+  const response = await getProperties(filters, authorization)
+  return res.status(response.statusCode).json(response.data)
+}

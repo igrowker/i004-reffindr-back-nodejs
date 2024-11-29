@@ -34,6 +34,8 @@ interface ApiResponse<T> {
   message?: string
 }
 
+//METHODS
+
 export const createProperty = async (
   propertyData: PropertyData,
   ownerEmail: string,
@@ -77,7 +79,7 @@ export const createProperty = async (
   }
 }
 
-export const getProperties = async (filters: any, authorization: string): Promise<ApiResponse<any[]>> => {
+export const getAllProperties = async (filters: any, authorization: string): Promise<ApiResponse<any[]>> => {
   const { data, status } = await httpClient.get('/Properties', {
     params: filters,
     headers: { Authorization: authorization },
@@ -89,3 +91,34 @@ export const getProperties = async (filters: any, authorization: string): Promis
     message: 'Properties fetched successfully',
   }
 }
+
+
+export const getFilteredProperties = async (
+  filters: {
+    CountryId?: number;
+    StateId?: number;
+    PriceMin?: number;
+    PriceMax?: number;
+    IsWorking?: boolean;
+    HasWarranty?: boolean;
+    RangeSalaryMin?: number;
+    RangeSalaryMax?: number;
+    Title?: string;
+  },
+  authorization: string
+): Promise<ApiResponse<any[]>> => {
+  try {
+    const {
+      CountryId,
+      StateId,
+      PriceMin,
+      PriceMax,
+      IsWorking,
+      HasWarranty,
+      RangeSalaryMin,
+      RangeSalaryMax,
+      Title,
+    } = filters;
+  } catch {
+
+  }
