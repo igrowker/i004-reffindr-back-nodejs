@@ -5,6 +5,7 @@ import { errorHandler } from './interfaces/middlewares/errorHandler';
 import authRoutes from './interfaces/routes/authRoutes';
 import notificationRoutes from './interfaces/routes/notificationRoutes';
 import propertyRoutes from './interfaces/routes/propertyRoutes';
+import applicationRoutes from './interfaces/routes/applicationRoutes';
 import userRoutes from './interfaces/routes/userRoutes';
 import setupSwagger from './swagger/swagger';
 
@@ -18,6 +19,7 @@ app.use(cors())
 
 app.use('/auth', authRoutes)
 app.use('/properties', propertyRoutes)
+app.use('/application', applicationRoutes)
 app.use('/users', userRoutes)
 app.use(notificationRoutes)
 
