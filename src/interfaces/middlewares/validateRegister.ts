@@ -1,4 +1,6 @@
-import { check, ValidationChain } from 'express-validator'
+import { check, ValidationChain } from 'express-validator';
+
+
 // import { Request } from "express";
 
 const validateRegister: ValidationChain[] = [
@@ -51,7 +53,7 @@ const validateRegister: ValidationChain[] = [
       return true
     })
     .custom((value) => {
-      if (!/[@$!%*?&]/.test(value)) {
+      if (!/[!@#$%^&*()\-_=+[\]{}|;:'",.<>?/`~\\]/.test(value)) {
         throw new Error('La contraseña ingresada debe contener un caracter especial.')
       }
       return true
