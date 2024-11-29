@@ -3,7 +3,7 @@ import swaggerUI from 'swagger-ui-express'
 import 'dotenv/config'
 import { Express } from 'express'
 
-const { PORT } = process.env
+const { URL } = process.env
 
 const options = {
   definition: {
@@ -18,7 +18,7 @@ const options = {
     },
     servers: [
       {
-        url: `http://localhost:${PORT}`,
+        url: `${URL}`,
         description: 'Local Server',
       },
     ],
