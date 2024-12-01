@@ -1,18 +1,23 @@
-name: Production CI/CD Pipeline
+name: Develop CI/CD Pipeline
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 on:
   push:
     branches:
-      - main
+      - develop
   workflow_dispatch:
     inputs:
       environment:
         description: 'Choose the environment to deploy'
         required: true
-        default: 'main'
+        default: 'develop'
         type: choice
         options:
-          - main
+          - develop
+
 jobs:
   docker-build-and-push:
     runs-on: ubuntu-latest
@@ -39,3 +44,23 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.sha }}
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:buildcache,mode=max
+
+  pull-and-deploy:
+    runs-on: [self-hosted, linux]
+    steps:
+    - name: Deploy Docker container to EC2
+      # Detener cualquier contenedor viejo
+      run: |
+        docker stop reffindr-nodejs || true
+        docker rm -f reffindr-nodejs || true
+  
+        docker system prune -af --volumes
+  
+        docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:prod
+  
+        docker run \
+        -d \
+        --name reffindr-nodejs \
+        -e PORT=3000 \
+        -p 80:3000 \
+        ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:prod
