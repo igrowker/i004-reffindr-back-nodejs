@@ -83,7 +83,14 @@ router.post(
           },
         }
       )
-      return res.status(response.status).json(response.data)
+      return res.status(response.status).json(
+        new BaseResponse({
+          data: response.data,
+          statusCode: response.status,
+          hasErrors: false,
+          errors: [],
+        })
+      )
     } catch (error: unknown) {
       console.error(error)
       return res.status(400).json(
@@ -108,7 +115,14 @@ router.get('/get-properties', tokenMiddleware, async (req: Request, res: Respons
       },
     })
 
-    return res.status(response.status).json(response.data)
+    return res.status(response.status).json(
+      new BaseResponse({
+        data: response.data,
+        statusCode: response.status,
+        hasErrors: false,
+        errors: [],
+      })
+    )
   } catch (error: unknown) {
     console.log(error)
     return res.status(404).json(
