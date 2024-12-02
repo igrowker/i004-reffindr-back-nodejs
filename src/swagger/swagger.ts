@@ -21,10 +21,10 @@ const options = {
         url: `${DEPLOY_URL}`,
         description: 'Deployment Server',
       },
-      { 
-        url: `http://localhost:3000`, 
-        description: 'Local server'
-      }
+      {
+        url: 'http://localhost:3000',
+        description: 'Development Server',
+      },
     ],
   },
   apis: ['./src/swagger/*.yaml'],
