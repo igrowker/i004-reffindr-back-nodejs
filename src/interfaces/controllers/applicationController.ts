@@ -7,7 +7,7 @@ import httpClient from '../services/httpClient'
 
 const router = Router()
 
-router.post('/create', tokenMiddleware, validationError, async (req: Request, res: Response) => {
+router.post('/create', validationError, async (req: Request, res: Response) => {
   const { propertyId } = req.body
   if (!propertyId) {
     return res.status(400).json(
@@ -24,13 +24,13 @@ router.post('/create', tokenMiddleware, validationError, async (req: Request, re
       { PropertyId: propertyId },
       {
         headers: {
-          Authorization: req.headers['Authorization'],
+          Authorization: req.headers['authorization']
         },
       }
     )
-
     return res.status(response.status).json(response.data)
   } catch (error: unknown) {
+    console.log(error)
     return res.status(400).json(
       new BaseResponse({
         errors: ['La aplicación no ha sido enviada correctamente'],

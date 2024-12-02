@@ -378,6 +378,8 @@ paths:
                   $ref: '#/components/schemas/Property'
   /application/create:
     post:
+      security:
+        - bearerAuth: []
       summary: Submit a new application
       tags: [Application]
       requestBody:
@@ -389,21 +391,3 @@ paths:
       responses:
         200:
           description: The application was succesfully submitted
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: object
-          #       properties:
-          #         data:
-          #           type: object
-          #           properties:
-          #             token:
-          #               type: string
-          #         errors:
-          #           type: array
-          #           items:
-          #             type: string
-          #         hasErrors:
-          #           type: boolean
-          #         statusCode:
-          #           type: number

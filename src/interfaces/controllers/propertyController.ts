@@ -79,7 +79,7 @@ router.post(
         {
           params: { ownerEmail },
           headers: {
-            Authorization: req.headers['Authorization'],
+            Authorization: req.headers['authorization'],
           },
         }
       )
@@ -104,7 +104,7 @@ router.get('/get-properties', tokenMiddleware, async (req: Request, res: Respons
     const response = await httpClient.get('/Properties', {
       params: { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title },
       headers: {
-        Authorization: req.headers['Authorization'],
+        Authorization: req.headers['authorization'],
       },
     })
 
