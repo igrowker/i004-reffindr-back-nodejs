@@ -13,6 +13,8 @@ tags:
     description: Endpoints for user management
   - name: Properties
     description: Endpoints for property management
+  - name: Application
+    description: Endpoints for application management
 components:
   securitySchemes:
     bearerAuth:
@@ -197,6 +199,16 @@ components:
               type: boolean
             rangeSalary:
               type: integer
+    ApplicationPost:
+      type: object
+      required:
+        - propertyId
+      properties:
+        propertyId:
+          type: integer
+          description: Property to submit application
+      example:
+        propertyId: 6
 
 paths:
   /auth/register:
@@ -364,3 +376,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Property'
+  /application/create:
+    post:
+      summary: Submit a new application
+      tags: [Application]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationPost'
+      responses:
+        200:
+          description: The application was succesfully submitted
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: object
+          #       properties:
+          #         data:
+          #           type: object
+          #           properties:
+          #             token:
+          #               type: string
+          #         errors:
+          #           type: array
+          #           items:
+          #             type: string
+          #         hasErrors:
+          #           type: boolean
+          #         statusCode:
+          #           type: number
