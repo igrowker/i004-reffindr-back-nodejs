@@ -24,7 +24,7 @@ const options = {
       { 
         url: `http://localhost:3000`, 
         description: 'Local server'
-       }
+      }
     ],
   },
   apis: ['./src/swagger/*.yaml'],
