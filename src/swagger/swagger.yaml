@@ -443,7 +443,15 @@ paths:
         - bearerAuth: []
       summary: Submit a new application
       tags: [Application]
-
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationPost'
+      responses:
+        200:
+          description: The application was successfully submitted
   /users/profile:
     get:
       security:
@@ -469,10 +477,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ApplicationPost'
-      responses:
-        200:
-          description: The application was succesfully submitted
-              $ref: '#/components/schemas/UpdateUser'
       responses:
         200:
           description: User profile updated successfully
