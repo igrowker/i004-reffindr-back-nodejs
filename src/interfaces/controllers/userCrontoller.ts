@@ -1,23 +1,33 @@
-import { Router, Request, Response } from 'express'
-
+import { Request, Response, Router } from 'express'
 import { validationResult } from 'express-validator'
 
-import httpClient from '../services/httpClient'
+import { BaseResponse } from '../../shared/utils/baseResponse'
+import { tokenMiddleware } from '../middlewares/tokenMiddleware'
 import validateUpdateUser from '../middlewares/validateUpdateUser'
+import httpClient from '../services/httpClient'
 
 const router = Router()
 
-router.get('/profile/:id', async (req: Request, res: Response) => {
-  const { id } = req.params
-
+router.get('/profile', tokenMiddleware, async (req: Request, res: Response) => {
   try {
-    const response = await httpClient.get(`/users/user/${id}`)
+    const response = await httpClient.get(`/Users/get-credentials`, {
+      headers: {
+        Authorization: req.headers['Authorization'],
+      },
+    })
 
     if (response.status === 404) {
       return res.status(404).json({ error: 'Usuario no encontrado' })
     }
 
-    return res.status(response.status).json(response.data)
+    return res.status(response.status).json(
+      new BaseResponse({
+        data: response.data,
+        statusCode: response.status,
+        hasErrors: false,
+        errors: [],
+      })
+    )
   } catch (error: any) {
     return res
       .status(error.response?.status || 500)

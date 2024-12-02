@@ -20,7 +20,14 @@ router.post('/register', validateRegister, validationError, async (req: Request,
       Password: password,
     })
 
-    return res.status(response.status).json(response.data)
+    return res.status(response.status).json(
+      new BaseResponse({
+        data: response.data,
+        statusCode: response.status,
+        hasErrors: false,
+        errors: [],
+      })
+    )
   } catch (error: unknown) {
     return res.status(400).json(
       new BaseResponse({

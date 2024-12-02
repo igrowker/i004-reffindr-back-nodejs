@@ -1,7 +1,7 @@
-import swaggerJSDoc from 'swagger-jsdoc'
-import swaggerUI from 'swagger-ui-express'
 import 'dotenv/config'
 import { Express } from 'express'
+import swaggerJSDoc from 'swagger-jsdoc'
+import swaggerUI from 'swagger-ui-express'
 
 const { DEPLOY_URL } = process.env
 
@@ -18,8 +18,12 @@ const options = {
     },
     servers: [
       {
-        url: `${DEPLOY_URL}`,
+        url: 'http://localhost:3000',
         description: 'Local Server',
+      },
+      {
+        url: `${DEPLOY_URL}`,
+        description: 'Deploy Server',
       },
     ],
   },
