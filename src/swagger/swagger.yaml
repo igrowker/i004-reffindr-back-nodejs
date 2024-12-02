@@ -269,7 +269,6 @@ components:
           description: Property to submit application
       example:
         propertyId: 6
-
 paths:
   /auth/register:
     post:
@@ -526,3 +525,18 @@ paths:
                     type: boolean
                   statusCode:
                     type: number
+  /users/owner-properties:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get owner properties
+      tags: [Users]
+      responses:
+        200:
+          description: A list of properties
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Property'
