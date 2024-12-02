@@ -5,7 +5,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: ${PORT}
-      DEPLOY_URL: ${DEPLOY_URL}
+      BACKEND_URL: ${BACKEND_URL}
     ports:
       - '${PORT}:${PORT}'
     restart: always

@@ -269,6 +269,20 @@ components:
           description: Property to submit application
       example:
         propertyId: 6
+<<<<<<< HEAD
+    Candidates:
+      type: object
+      required:
+        - propertyId
+      properties:
+        propertyId:
+          type: integer
+          description: Property to fetch candidates
+      example:
+        propertyId: 6
+
+=======
+>>>>>>> origin/develop
 paths:
   /auth/register:
     post:
@@ -451,6 +465,28 @@ paths:
       responses:
         200:
           description: The application was successfully submitted
+  /application/candidates/{propertyId}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get Candidates for selected property
+      tags: [Application]
+      parameters:
+      - name: propertyId
+        in: path
+        description: Property ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: List of selected candidates for the property
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Candidates'
   /users/profile:
     get:
       security:
