@@ -7,7 +7,7 @@ import httpClient from '../services/httpClient'
 
 const router = Router()
 
-router.post('/create', validationError, async (req: Request, res: Response) => {
+router.post('/create', validationError, tokenMiddleware, async (req: Request, res: Response) => {
   const { propertyId } = req.body
   if (!propertyId) {
     return res.status(400).json(
@@ -24,11 +24,18 @@ router.post('/create', validationError, async (req: Request, res: Response) => {
       { PropertyId: propertyId },
       {
         headers: {
-          Authorization: req.headers['authorization']
+          Authorization: req.headers['authorization'],
         },
       }
     )
-    return res.status(response.status).json(response.data)
+    return res.status(response.status).json(
+      new BaseResponse({
+        data: response.data,
+        errors: [],
+        hasErrors: false,
+        statusCode: response.status,
+      })
+    )
   } catch (error: unknown) {
     return res.status(400).json(
       new BaseResponse({
@@ -63,8 +70,9 @@ router.get('/candidates/:propertyId', tokenMiddleware, validationError, async (r
         data: response.data,
         errors: [],
         hasErrors: false,
-        statusCode: response.status
-      }))
+        statusCode: response.status,
+      })
+    )
   } catch (error: unknown) {
     console.log(error)
     return res.status(400).json(
@@ -100,8 +108,9 @@ router.get('/property/:propertyId', tokenMiddleware, validationError, async (req
         data: response.data,
         errors: [],
         hasErrors: false,
-        statusCode: response.status
-      }))
+        statusCode: response.status,
+      })
+    )
   } catch (error: unknown) {
     console.log(error)
     return res.status(400).json(
@@ -114,26 +123,23 @@ router.get('/property/:propertyId', tokenMiddleware, validationError, async (req
   }
 })
 
-router.get('/users/:userId', tokenMiddleware, validationError, async (req: Request, res: Response) => {
-  const { userId } = req.params
+router.get('/user', tokenMiddleware, async (req: Request, res: Response) => {
 
-  if (!userId) {
-    return res.status(400).json(
-      new BaseResponse({
-        errors: ['El ID (userId) no es válido'],
-        hasErrors: true,
-        statusCode: res.statusCode,
-      })
-    )
-  }
   try {
-    const { data, status } = await httpClient.get('/Application/User/', {
-      params: { userId },
+    const response = await httpClient.get('/Application/User/', {
       headers: {
         Authorization: req.headers['Authorization'],
       },
     })
-    return res.status(status).json(data)
+
+    return res.status(response.status).json(
+      new BaseResponse({
+        data: response.data,
+        errors: [],
+        hasErrors: false,
+        statusCode: response.status,
+      })
+    )
   } catch (error: unknown) {
     return res.status(400).json(
       new BaseResponse({
