@@ -40,7 +40,7 @@ router.post('/create', validationError, async (req: Request, res: Response) => {
   }
 })
 
-router.get('/candidates/:propertyId', validationError, async (req: Request, res: Response) => {
+router.get('/candidates/:propertyId', tokenMiddleware, validationError, async (req: Request, res: Response) => {
   const { propertyId } = req.params
 
   if (!propertyId) {
@@ -53,12 +53,18 @@ router.get('/candidates/:propertyId', validationError, async (req: Request, res:
     )
   }
   try {
-    const { data, status } = await httpClient.get(`/Application/SelectedCandidates/${propertyId}`, {
+    const response = await httpClient.get(`/Application/SelectedCandidates/${propertyId}`, {
       headers: {
         Authorization: req.headers['authorization'],
       },
     })
-    return res.status(status).json(data)
+    return res.status(response.status).json(
+      new BaseResponse({
+        data: response.data,
+        errors: [],
+        hasErrors: false,
+        statusCode: response.status
+      }))
   } catch (error: unknown) {
     console.log(error)
     return res.status(400).json(
