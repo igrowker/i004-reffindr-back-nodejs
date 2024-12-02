@@ -13,8 +13,13 @@ tags:
     description: Endpoints for auth management
   - name: Properties
     description: Endpoints for property management
+<<<<<<< HEAD
+  - name: Application
+    description: Endpoints for application management
+=======
   - name: Users
     description: Endpoints for user management
+>>>>>>> origin/develop
 components:
   securitySchemes:
     bearerAuth:
@@ -257,6 +262,16 @@ components:
               type: boolean
             rangeSalary:
               type: integer
+    ApplicationPost:
+      type: object
+      required:
+        - propertyId
+      properties:
+        propertyId:
+          type: integer
+          description: Property to submit application
+      example:
+        propertyId: 6
 
 paths:
   /auth/register:
@@ -425,6 +440,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Property'
+<<<<<<< HEAD
+  /application/create:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Submit a new application
+      tags: [Application]
+=======
 
   /users/profile:
     get:
@@ -445,11 +468,18 @@ paths:
         - bearerAuth: []
       summary: Update user profile
       tags: [Users]
+>>>>>>> origin/develop
       requestBody:
         required: true
         content:
           application/json:
             schema:
+<<<<<<< HEAD
+              $ref: '#/components/schemas/ApplicationPost'
+      responses:
+        200:
+          description: The application was succesfully submitted
+=======
               $ref: '#/components/schemas/UpdateUser'
       responses:
         200:
@@ -500,3 +530,4 @@ paths:
                     type: boolean
                   statusCode:
                     type: number
+>>>>>>> origin/develop

@@ -18,13 +18,13 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
-        description: 'Local Server',
-      },
-      {
         url: `${DEPLOY_URL}`,
-        description: 'Deploy Server',
+        description: 'Deployment Server',
       },
+      { 
+        url: `http://localhost:3000`, 
+        description: 'Local server'
+      }
     ],
   },
   apis: ['./src/swagger/*.yaml'],
