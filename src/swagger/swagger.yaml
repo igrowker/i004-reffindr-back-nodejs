@@ -6,13 +6,15 @@ info:
   contact:
     name: Jack
 servers:
-  - url: https://i004-reffindr-back-dotnet-dev.onrender.com/api
+  - url: https://i004-reffindr-back-nodejs-dev.onrender.com/
     description: Render Server
 tags:
-  - name: Users
-    description: Endpoints for user management
+  - name: Auth
+    description: Endpoints for auth management
   - name: Properties
     description: Endpoints for property management
+  - name: Users
+    description: Endpoints for user management
 components:
   securitySchemes:
     bearerAuth:
@@ -20,6 +22,64 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    User:
+      type: object
+      properties:
+        roleId:
+          type: number
+        countryId:
+          type: number
+        stateId:
+          type: number
+        name:
+          type: string
+        lastName:
+          type: string
+        dni:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        birthDate:
+          type: string
+        email:
+          type: string
+        isProfileComplete:
+          type: boolean
+    UpdateUser:
+      type: object
+      required:
+        - email
+        - name
+        - lastName
+        - dni
+        - phone
+        - address
+        - birthDate
+      properties:
+        email:
+          type: string
+          description: The email of the User
+        name:
+          type: string
+          description: The name of the User
+        lastName:
+          type: string
+          description: The lastName of the User
+        dni:
+          type: string
+          description: The DNI of the User
+        phone:
+          type: string
+          description: The phone number of the User
+        address:
+          type: string
+          description: The address of the User
+        birthDate:
+          type: string
+          format: date-time
+          description: The birth date of the User
     UserRegister:
       type: object
       required:
@@ -202,7 +262,7 @@ paths:
   /auth/register:
     post:
       summary: Register a new user
-      tags: [Users]
+      tags: [Auth]
       requestBody:
         required: true
         content:
@@ -224,7 +284,7 @@ paths:
   /auth/login:
     post:
       summary: Login a user
-      tags: [Users]
+      tags: [Auth]
       requestBody:
         required: true
         content:
@@ -252,6 +312,7 @@ paths:
                     type: boolean
                   statusCode:
                     type: number
+
   /properties/create-property:
     post:
       security:
@@ -364,3 +425,78 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Property'
+
+  /users/profile:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get User Profile
+      tags: [Users]
+      responses:
+        200:
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/profile/update:
+    put:
+      security:
+        - bearerAuth: []
+      summary: Update user profile
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUser'
+      responses:
+        200:
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      name:
+                        type: string
+                      lastName:
+                        type: string
+                      dni:
+                        type: string
+                      phone:
+                        type: string
+                      address:
+                        type: string
+                      birthDate:
+                        type: string
+                        format: date-time
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
+        400:
+          description: Error updating user profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
