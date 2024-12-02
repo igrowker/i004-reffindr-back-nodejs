@@ -6,7 +6,7 @@ info:
   contact:
     name: Jack
 servers:
-  - url: https://i004-reffindr-back-nodejs-dev.onrender.com/
+  - url: https://i004-reffindr-back-dotnet-dev.onrender.com/api
     description: Render Server
 tags:
   - name: Auth
