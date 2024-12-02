@@ -1,4 +1,4 @@
-name: Develop CI/CD Pipeline
+name: Production CI/CD Pipeline
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -7,16 +7,16 @@ concurrency:
 on:
   push:
     branches:
-      - develop
+      - main
   workflow_dispatch:
     inputs:
       environment:
         description: 'Choose the environment to deploy'
         required: true
-        default: 'develop'
+        default: 'main'
         type: choice
         options:
-          - develop
+          - main
 
 jobs:
   docker-build-and-push:
@@ -37,30 +37,31 @@ jobs:
       - name: Build Docker Image with Multiple Tags
         uses: docker/build-push-action@v6
         with:
-          context: .
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:prod
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.sha }}
+          file: Reffindr.Api/Dockerfile
+          context: .
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:buildcache,mode=max
 
   pull-and-deploy:
-    runs-on: [self-hosted, linux]
+    runs-on: [self-hosted]
+    needs: docker-build-and-push
     steps:
     - name: Deploy Docker container to EC2
-      # Detener cualquier contenedor viejo
       run: |
-        docker stop reffindr-nodejs || true
-        docker rm -f reffindr-nodejs || true
-  
+        docker stop reffindr-dotnet || true
+        docker rm -f reffindr-dotnet || true
+    
         docker system prune -af --volumes
-  
+    
         docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:prod
-  
+    
         docker run \
-        -d \
-        --name reffindr-nodejs \
-        -e PORT=3000 \
-        -p 80:3000 \
-        ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:prod
+          -d \
+          --name reffindr-dotnet \
+          -p 8080:8080 \
+          -p 8081:8081 \
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:prod
