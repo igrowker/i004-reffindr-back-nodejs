@@ -30,7 +30,6 @@ router.post('/create', validationError, async (req: Request, res: Response) => {
     )
     return res.status(response.status).json(response.data)
   } catch (error: unknown) {
-    console.log(error)
     return res.status(400).json(
       new BaseResponse({
         errors: ['La aplicación no ha sido enviada correctamente'],
@@ -41,7 +40,7 @@ router.post('/create', validationError, async (req: Request, res: Response) => {
   }
 })
 
-router.get('/property/:propertyId', tokenMiddleware, validationError, async (req: Request, res: Response) => {
+router.get('/candidates/:propertyId', validationError, async (req: Request, res: Response) => {
   const { propertyId } = req.params
 
   if (!propertyId) {
@@ -54,14 +53,14 @@ router.get('/property/:propertyId', tokenMiddleware, validationError, async (req
     )
   }
   try {
-    const { data, status } = await httpClient.get('/Application/Property/', {
-      params: { propertyId },
+    const { data, status } = await httpClient.get(`/Application/SelectedCandidates/${propertyId}`, {
       headers: {
-        Authorization: req.headers['Authorization'],
+        Authorization: req.headers['authorization'],
       },
     })
     return res.status(status).json(data)
   } catch (error: unknown) {
+    console.log(error)
     return res.status(400).json(
       new BaseResponse({
         errors: ['Error al traer la aplicación'],

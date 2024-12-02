@@ -2,14 +2,14 @@ import axios from 'axios'
 import 'dotenv/config'
 import https from 'https'
 
-const { DEPLOY_URL } = process.env
+const { BACKEND_URL } = process.env
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
 })
 
 const httpClient = axios.create({
-  baseURL: DEPLOY_URL,
+  baseURL: BACKEND_URL,
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
