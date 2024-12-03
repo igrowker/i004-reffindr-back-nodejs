@@ -1,0 +1,597 @@
+openapi: 3.0.0
+info:
+  title: Property Management API
+  version: 1.0.0
+  description: Reffindr Node
+  contact:
+    name: Jack
+servers:
+  - url: https://i004-reffindr-back-dotnet-dev.onrender.com/api
+    description: Render Server
+tags:
+  - name: Auth
+    description: Endpoints for auth management
+  - name: Properties
+    description: Endpoints for property management
+  - name: Application
+    description: Endpoints for application management
+  - name: Users
+    description: Endpoints for user management
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        roleId:
+          type: number
+        countryId:
+          type: number
+        stateId:
+          type: number
+        name:
+          type: string
+        lastName:
+          type: string
+        dni:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        birthDate:
+          type: string
+        email:
+          type: string
+        isProfileComplete:
+          type: boolean
+    UpdateUser:
+      type: object
+      required:
+        - email
+        - name
+        - lastName
+        - dni
+        - phone
+        - address
+        - birthDate
+      properties:
+        email:
+          type: string
+          description: The email of the User
+        name:
+          type: string
+          description: The name of the User
+        lastName:
+          type: string
+          description: The lastName of the User
+        dni:
+          type: string
+          description: The DNI of the User
+        phone:
+          type: string
+          description: The phone number of the User
+        address:
+          type: string
+          description: The address of the User
+        birthDate:
+          type: string
+          format: date-time
+          description: The birth date of the User
+    UserRegister:
+      type: object
+      required:
+        - roleId
+        - name
+        - lastName
+        - email
+        - password
+      properties:
+        roleId:
+          type: number
+          description: The roleId of the User
+        name:
+          type: string
+          description: The name of the User
+        lastName:
+          type: string
+          description: The lastName of the User
+        email:
+          type: string
+          description: The email of the User
+        password:
+          type: string
+          description: The password of the User
+      example:
+        roleId: 1
+        name: John
+        lastName: Doe
+        email: john.doe@example.com
+        password: password
+    UserLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          description: The email of the User
+        password:
+          type: string
+          description: The password of the User
+      example:
+        email: john.doe@example.com
+        password: password
+    CreateProperty:
+      type: object
+      required:
+        - countryId
+        - stateId
+        - title
+        - address
+        - environments
+        - bathrooms
+        - bedrooms
+        - seniority
+        - water
+        - gas
+        - surveillance
+        - electricity
+        - internet
+        - pool
+        - garage
+        - pets
+        - grill
+        - elevator
+        - terrace
+        - description
+        - requirementPostRequestDto
+      properties:
+        countryId:
+          type: integer
+        stateId:
+          type: integer
+        title:
+          type: string
+        address:
+          type: string
+        environments:
+          type: integer
+        bathrooms:
+          type: integer
+        bedrooms:
+          type: integer
+        seniority:
+          type: integer
+        water:
+          type: boolean
+        gas:
+          type: boolean
+        surveillance:
+          type: boolean
+        electricity:
+          type: boolean
+        internet:
+          type: boolean
+        pool:
+          type: boolean
+        garage:
+          type: boolean
+        pets:
+          type: boolean
+        grill:
+          type: boolean
+        elevator:
+          type: boolean
+        terrace:
+          type: boolean
+        description:
+          type: string
+        requirementPostRequestDto:
+          type: object
+          required:
+            - isWorking
+            - hasWarranty
+            - rangeSalary
+          properties:
+            isWorking:
+              type: boolean
+            hasWarranty:
+              type: boolean
+            rangeSalary:
+              type: integer
+    Property:
+      type: object
+      properties:
+        id:
+          type: string
+        countryId:
+          type: integer
+        stateId:
+          type: integer
+        title:
+          type: string
+        address:
+          type: string
+        environments:
+          type: integer
+        bathrooms:
+          type: integer
+        bedrooms:
+          type: integer
+        seniority:
+          type: integer
+        water:
+          type: boolean
+        gas:
+          type: boolean
+        surveillance:
+          type: boolean
+        electricity:
+          type: boolean
+        internet:
+          type: boolean
+        pool:
+          type: boolean
+        garage:
+          type: boolean
+        pets:
+          type: boolean
+        grill:
+          type: boolean
+        elevator:
+          type: boolean
+        terrace:
+          type: boolean
+        description:
+          type: string
+        requirementPostRequestDto:
+          type: object
+          properties:
+            isWorking:
+              type: boolean
+            hasWarranty:
+              type: boolean
+            rangeSalary:
+              type: integer
+    ApplicationPost:
+      type: object
+      required:
+        - propertyId
+      properties:
+        propertyId:
+          type: integer
+          description: Property to submit application
+      example:
+        propertyId: 6
+    Candidates:
+      type: object
+      required:
+        - propertyId
+      properties:
+        propertyId:
+          type: integer
+          description: Property to fetch candidates
+      example:
+        propertyId: 6
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+      responses:
+        200:
+          description: The user was successfully registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  email:
+                    type: string
+  /auth/login:
+    post:
+      summary: Login a user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        200:
+          description: The user was successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
+
+  /properties/create-property:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Create a new property
+      tags: [Properties]
+      parameters:
+        - name: ownerEmail
+          in: query
+          description: Email required
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProperty'
+      responses:
+        200:
+          description: Property successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      message:
+                        type: string
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
+  /properties/get-properties:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get properties
+      tags: [Properties]
+      parameters:
+        - name: CountryId
+          in: query
+          description: Country ID
+          required: false
+          schema:
+            type: integer
+        - name: StateId
+          in: query
+          description: State ID
+          required: false
+          schema:
+            type: integer
+        - name: PriceMin
+          in: query
+          description: Minimum price
+          required: false
+          schema:
+            type: number
+        - name: PriceMax
+          in: query
+          description: Maximum price
+          required: false
+          schema:
+            type: number
+        - name: IsWorking
+          in: query
+          description: Is working
+          required: false
+          schema:
+            type: boolean
+        - name: HasWarranty
+          in: query
+          description: Has warranty
+          required: false
+          schema:
+            type: boolean
+        - name: RangeSalaryMin
+          in: query
+          description: Minimum salary range
+          required: false
+          schema:
+            type: number
+        - name: RangeSalaryMax
+          in: query
+          description: Maximum salary range
+          required: false
+          schema:
+            type: number
+        - name: Title
+          in: query
+          description: Title
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: A list of properties
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Property'
+  /application/create:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Submit a new application
+      tags: [Application]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationPost'
+      responses:
+        200:
+          description: The application was successfully submitted
+  /application/candidates/{propertyId}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get Selected Candidates for the property
+      tags: [Application]
+      parameters:
+      - name: propertyId
+        in: path
+        description: Property ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: List of selected candidates for the property
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Candidates'
+  /application/property/{propertyId}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get all Candidates for property
+      tags: [Application]
+      parameters:
+      - name: propertyId
+        in: path
+        description: Property ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: List of candidates for the property
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Candidates'
+  /users/profile:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get User Profile
+      tags: [Users]
+      responses:
+        200:
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/profile/update:
+    put:
+      security:
+        - bearerAuth: []
+      summary: Update user profile
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationPost'
+      responses:
+        200:
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      name:
+                        type: string
+                      lastName:
+                        type: string
+                      dni:
+                        type: string
+                      phone:
+                        type: string
+                      address:
+                        type: string
+                      birthDate:
+                        type: string
+                        format: date-time
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
+        400:
+          description: Error updating user profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
+  /users/owner-properties:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get owner properties
+      tags: [Users]
+      responses:
+        200:
+          description: A list of properties
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Property'
