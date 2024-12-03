@@ -1,11 +1,16 @@
 import { Request, Response, Router } from 'express'
 import { validationResult } from 'express-validator'
+import FormData from 'form-data'
+import multer from 'multer'
+
 
 import { BaseResponse } from '../../shared/utils/baseResponse'
 import { tokenMiddleware } from '../middlewares/tokenMiddleware'
 import validateUpdateUser from '../middlewares/validateUpdateUser'
 import { validationError } from '../middlewares/validationError'
 import httpClient from '../services/httpClient'
+
+const upload = multer();
 
 const router = Router()
 
@@ -73,6 +78,7 @@ router.get('/owner-properties', tokenMiddleware, async (req: Request, res: Respo
 
 router.put(
   '/profile/update',
+  upload.single('profileImage'),
   validateUpdateUser,
   tokenMiddleware,
   validationError,
@@ -82,24 +88,31 @@ router.put(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() })
     }
-    const { email, name, lastName, dni, phone, address, birthDate, profileImage } = req.body
+    const { email, name, lastName, dni, phone, address, birthDate } = req.body
+
+    const formData = new FormData();
+    formData.append('Email', email);
+    formData.append('Name', name);
+    formData.append('LastName', lastName);
+    formData.append('Dni', dni);
+    formData.append('Phone', phone);
+    formData.append('Address', address);
+    formData.append('BirthDate', birthDate);
+
+    if (req.file) {
+      formData.append('ProfileImage', req.file.buffer, {
+        filename: req.file.originalname,
+        contentType: req.file.mimetype,
+      })
+    }
 
     try {
       const response = await httpClient.put(
-        `/Users/modify-credentials`,
-        {
-          Email: email,
-          Name: name,
-          LastName: lastName,
-          Dni: dni,
-          Phone: phone,
-          Address: address,
-          BirthDate: birthDate,
-          ProfileImage: profileImage
-        },
-        {
+        `/Users/modify-credentials`, 
+        formData, {
           headers: {
             Authorization: req.headers['authorization'],
+            ...formData.getHeaders()
           },
         }
       )

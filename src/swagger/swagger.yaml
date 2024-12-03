@@ -618,9 +618,36 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ApplicationPost'
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: User's email
+                name:
+                  type: string
+                  description: User's first name
+                lastName:
+                  type: string
+                  description: User's last name
+                dni:
+                  type: string
+                  description: User's DNI
+                phone:
+                  type: string
+                  description: User's phone number
+                address:
+                  type: string
+                  description: User's address
+                birthDate:
+                  type: string
+                  format: date-time
+                  description: User's date of birth
+                profileImage:
+                  type: string
+                  format: binary
+                  description: User's profile image (file)
       responses:
         200:
           description: User profile updated successfully
@@ -647,12 +674,15 @@ paths:
                       birthDate:
                         type: string
                         format: date-time
+                      profileImage:
+                        type: string
+                        description: URL of the profile image
+                  hasErrors:
+                    type: boolean
                   errors:
                     type: array
                     items:
                       type: string
-                  hasErrors:
-                    type: boolean
                   statusCode:
                     type: number
         400:
@@ -670,6 +700,7 @@ paths:
                     type: boolean
                   statusCode:
                     type: number
+
   /users/owner-properties:
     get:
       security:
