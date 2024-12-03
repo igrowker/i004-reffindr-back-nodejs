@@ -47,6 +47,15 @@ const validateUpdateUser: ValidationChain[] = [
       }
       return true
     }),
+
+  check('dni').isNumeric().withMessage('El DNI debe ser un número.'),
+  check('phone').notEmpty().withMessage('El teléfono es obligatorio.'),
+  check('address').notEmpty().withMessage('La dirección es obligatoria.'),
+  check('birthDate').isISO8601().withMessage('La fecha de nacimiento debe ser válida.'),
+  check('profileImage')
+    .optional()
+    .isBase64()
+    .withMessage('La imagen de perfil debe estar codificada en formato Base64.'),
 ]
 
 export default validateUpdateUser

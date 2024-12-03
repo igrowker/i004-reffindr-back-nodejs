@@ -124,11 +124,10 @@ router.get('/property/:propertyId', tokenMiddleware, validationError, async (req
 })
 
 router.get('/user', tokenMiddleware, async (req: Request, res: Response) => {
-
   try {
     const response = await httpClient.get('/Application/User/', {
       headers: {
-        Authorization: req.headers['Authorization'],
+        Authorization: req.headers['authorization'],
       },
     })
 
@@ -144,6 +143,54 @@ router.get('/user', tokenMiddleware, async (req: Request, res: Response) => {
     return res.status(400).json(
       new BaseResponse({
         errors: ['Error al traer la aplicación'],
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
+  }
+})
+
+router.put('/update-selected-candidates', tokenMiddleware, validationError, async (req: Request, res: Response) => {
+  const { candidateUserId, propertyId } = req.query
+
+  if (!candidateUserId || !propertyId) {
+    return res.status(400).json(
+      new BaseResponse({
+        errors: ['Los parámetros candidateUserId y propertyId son requeridos'],
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
+  }
+
+  try {
+    const response = await httpClient.put(
+      '/Application/PutSelectApplicationCandidates',
+      {
+        CandidateUserId: candidateUserId,
+        PropertyId: propertyId,
+      },
+      {
+        headers: {
+          Authorization: req.headers['authorization'],
+        },
+      }
+    )
+
+    return res.status(response.status).json(
+      new BaseResponse({
+        data: response.data,
+        errors: [],
+        hasErrors: false,
+        statusCode: response.status,
+      })
+    )
+  } catch (error: unknown) {
+    console.error(error)
+
+    return res.status(400).json(
+      new BaseResponse({
+        errors: ['Error al actualizar el estado del candidato'],
         hasErrors: true,
         statusCode: res.statusCode,
       })
