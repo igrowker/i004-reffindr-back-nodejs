@@ -9,12 +9,12 @@ servers:
   - url: https://i004-reffindr-back-dotnet-dev.onrender.com/api
     description: Render Server
 tags:
+  - name: Application
+    description: Endpoints for application management
   - name: Auth
     description: Endpoints for auth management
   - name: Properties
     description: Endpoints for property management
-  - name: Application
-    description: Endpoints for application management
   - name: Users
     description: Endpoints for user management
 components:
@@ -334,7 +334,6 @@ paths:
                     type: boolean
                   statusCode:
                     type: number
-
   /properties/create-property:
     post:
       security:
@@ -506,6 +505,97 @@ paths:
                 type: array
                 items: 
                   $ref: '#/components/schemas/Candidates'
+  /application/update-selected-candidates:
+    put:
+      security:
+        - bearerAuth: []
+      summary: Update selected candidates for a property
+      tags: [Application]
+      parameters:
+        - name: candidateUserId
+          in: query
+          description: The ID of the candidate to update
+          required: true
+          schema:
+            type: integer
+        - name: propertyId
+          in: query
+          description: The ID of the property
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Selected candidates updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
+        400:
+          description: Error updating selected candidates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
+  /application/user:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get user applications
+      tags: [Application]
+      responses:
+        200:
+          description: User applications retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
+        400:
+          description: Error retrieving user applications
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
   /users/profile:
     get:
       security:

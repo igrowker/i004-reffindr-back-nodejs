@@ -82,7 +82,7 @@ router.put(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() })
     }
-    const { email, name, lastName, dni, phone, address, birthDate } = req.body
+    const { email, name, lastName, dni, phone, address, birthDate, profileImage } = req.body
 
     try {
       const response = await httpClient.put(
@@ -95,10 +95,11 @@ router.put(
           Phone: phone,
           Address: address,
           BirthDate: birthDate,
+          ProfileImage: profileImage
         },
         {
           headers: {
-            Authorization: req.headers['Authorization'],
+            Authorization: req.headers['authorization'],
           },
         }
       )
