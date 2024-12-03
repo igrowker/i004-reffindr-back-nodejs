@@ -1,9 +1,17 @@
-import { Request, Response, NextFunction } from 'express'
+import { Response } from 'express';
+import { BaseResponse } from '../../shared/utils/baseResponse';
 
-export const errorHandler = (err: any, _req: Request, res: Response, _next: NextFunction) => {
-  console.error(err)
-  const status = err.response?.status || 500
-  const message = err.response?.data?.message || 'Internal Server Error'
+export const errorHandler = (err: any, res: Response) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Internal Server Error';
+  const details = Array.isArray(err.details) ? err.details : [message];
 
-  res.status(status).json({ message })
-}
+  res.status(statusCode).json(
+    new BaseResponse({
+      data: null,
+      errors: details,
+      hasErrors: true,
+      statusCode,
+    })
+  );
+};
