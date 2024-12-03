@@ -1,6 +1,7 @@
 import cors from 'cors';
 import 'dotenv/config';
 import express, { Express, Request, Response } from 'express';
+import { metricsMiddleware } from './interfaces/middlewares/metrics.middleware';
 import { errorHandler } from './interfaces/middlewares/errorHandler';
 import authRoutes from './interfaces/routes/authRoutes';
 import notificationRoutes from './interfaces/routes/notificationRoutes';
@@ -8,6 +9,7 @@ import propertyRoutes from './interfaces/routes/propertyRoutes';
 import applicationRoutes from './interfaces/routes/applicationRoutes';
 import userRoutes from './interfaces/routes/userRoutes';
 import setupSwagger from './swagger/swagger';
+import metricsRoutes from './interfaces/metrics/metrics.routes';
 
 
 const { PORT } = process.env
@@ -17,11 +19,15 @@ app.use(express.json())
 setupSwagger(app)
 app.use(cors())
 
+app.use(metricsMiddleware);
+
 app.use('/auth', authRoutes)
 app.use('/properties', propertyRoutes)
 app.use('/application', applicationRoutes)
 app.use('/users', userRoutes)
 app.use(notificationRoutes)
+
+app.use('/metrics', metricsRoutes);
 
 app.use(errorHandler)
 
