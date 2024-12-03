@@ -76,6 +76,7 @@ jobs:
         with:
           context: .
           push: true
+          file: Dockerfile
           load: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:dev
