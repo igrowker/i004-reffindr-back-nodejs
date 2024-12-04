@@ -33,6 +33,8 @@ const validateCreateProperty: ValidationChain[] = [
     .withMessage('Debe seleccionar un rango salarial')
     .isNumeric()
     .withMessage('Debe seleccionar un número.'),
+  check('ownerEmail').isEmail().withMessage('Debe ingresar un mail de propietario válido.'),
+
 ]
 
 export default validateCreateProperty

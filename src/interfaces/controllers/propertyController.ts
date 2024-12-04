@@ -1,28 +1,23 @@
 import { Request, Response, Router } from 'express'
-
+import FormData from 'form-data'
+import multer from 'multer'
 import { BaseResponse } from '../../shared/utils/baseResponse'
 import { tokenMiddleware } from '../middlewares/tokenMiddleware'
 import validateCreateProperty from '../middlewares/validateCreateProperty'
 import { validationError } from '../middlewares/validationError'
 import httpClient from '../services/httpClient'
 
+const upload = multer();
+
 const router = Router()
+
 router.post(
   '/create-property',
+  upload.array('Images'),
   tokenMiddleware,
   validateCreateProperty,
   validationError,
   async (req: Request, res: Response) => {
-    const { ownerEmail } = req.query
-    if (!ownerEmail || typeof ownerEmail !== 'string') {
-      return res.status(400).json(
-        new BaseResponse({
-          errors: ['El correo del propietario (ownerEmail) es obligatorio y debe ser un string.'],
-          hasErrors: true,
-          statusCode: res.statusCode,
-        })
-      )
-    }
     const {
       countryId,
       stateId,
@@ -44,42 +39,56 @@ router.post(
       elevator,
       terrace,
       description,
+      ownerEmail,
+      price,
       requirementPostRequestDto: { isWorking, hasWarranty, rangeSalary },
     } = req.body
+
+    const formData = new FormData();
+    formData.append('CountryId', countryId || '');
+    formData.append('StateId', stateId || '');
+    formData.append('Title', title || '');
+    formData.append('Address', address || '');
+    formData.append('Environments', environments || '');
+    formData.append('Bathrooms', bathrooms || '');
+    formData.append('Bedrooms', bedrooms || '');
+    formData.append('Seniority', seniority || '');
+    formData.append('Water', water || '');
+    formData.append('Gas', gas || '');
+    formData.append('Surveillance', surveillance || '');
+    formData.append('Electricity', electricity || '');
+    formData.append('Internet', internet || '');
+    formData.append('Pool', pool || '');
+    formData.append('Garage', garage || '');
+    formData.append('Pets', pets || '');
+    formData.append('Grill', grill || '');
+    formData.append('Elevator', elevator || '');
+    formData.append('Terrace', terrace || '');
+    formData.append('Description', description || '');
+    formData.append('OwnerEmail', ownerEmail || '');
+    formData.append('Price', price || '');
+    formData.append('RequirementPostRequestDto.IsWorking', isWorking || '');
+    formData.append('RequirementPostRequestDto.HasWarranty', hasWarranty || '');
+    formData.append('RequirementPostRequestDto.RangeSalary', rangeSalary || '');
+
+    if (req.files && Array.isArray(req.files)) {
+      req.files.forEach((file, index) => {
+        formData.append(`Images[${index}]`, file.buffer, {
+          filename: file.originalname,
+          contentType: file.mimetype,
+        });
+      });
+    }
+
     try {
       const response = await httpClient.post(
         '/Properties/PostProperty',
-        {
-          CountryId: countryId,
-          StateId: stateId,
-          Title: title,
-          Address: address,
-          Environments: environments,
-          Bathrooms: bathrooms,
-          Bedrooms: bedrooms,
-          Seniority: seniority,
-          Water: water,
-          Gas: gas,
-          Surveillance: surveillance,
-          Electricity: electricity,
-          Internet: internet,
-          Pool: pool,
-          Garage: garage,
-          Pets: pets,
-          Grill: grill,
-          Elevator: elevator,
-          Terrace: terrace,
-          Description: description,
-          RequirementPostRequestDto: {
-            IsWorking: isWorking,
-            HasWarranty: hasWarranty,
-            RangeSalary: rangeSalary,
-          },
-        },
+        formData,
         {
           params: { ownerEmail },
           headers: {
             Authorization: req.headers['authorization'],
+            ...formData.getHeaders()
           },
         }
       )

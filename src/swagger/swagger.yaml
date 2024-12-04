@@ -150,24 +150,35 @@ components:
         - elevator
         - terrace
         - description
-        - requirementPostRequestDto
+        - price
+        - RequirementPostRequestDto
+        - IsWorking
+        - HasWarranty
+        - Images
+        - ownerEmail
       properties:
         countryId:
           type: integer
+          format: int32
         stateId:
           type: integer
+          format: int32
         title:
           type: string
         address:
           type: string
         environments:
           type: integer
+          format: int32
         bathrooms:
           type: integer
+          format: int32
         bedrooms:
           type: integer
+          format: int32
         seniority:
           type: integer
+          format: int32
         water:
           type: boolean
         gas:
@@ -192,19 +203,27 @@ components:
           type: boolean
         description:
           type: string
-        requirementPostRequestDto:
+        price:
+          type: number
+          format: double
+        RequirementPostRequestDto:
           type: object
-          required:
-            - isWorking
-            - hasWarranty
-            - rangeSalary
           properties:
-            isWorking:
+            RangeSalary:
+              type: number
+              format: double
+            IsWorking:
               type: boolean
-            hasWarranty:
+            HasWarranty:
               type: boolean
-            rangeSalary:
-              type: integer
+        Images:
+          type: array
+          items:
+            type: string
+            format: binary
+        ownerEmail:
+          type: string
+          format: email
     Property:
       type: object
       properties:
@@ -340,17 +359,10 @@ paths:
         - bearerAuth: []
       summary: Create a new property
       tags: [Properties]
-      parameters:
-        - name: ownerEmail
-          in: query
-          description: Email required
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/CreateProperty'
       responses:
@@ -368,6 +380,21 @@ paths:
                         type: string
                       message:
                         type: string
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                  hasErrors:
+                    type: boolean
+                  statusCode:
+                    type: number
+        400:
+          description: Error creating property
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
                   errors:
                     type: array
                     items:
@@ -468,12 +495,12 @@ paths:
       summary: Get Selected Candidates for the property
       tags: [Application]
       parameters:
-      - name: propertyId
-        in: path
-        description: Property ID
-        required: true
-        schema:
-          type: integer
+        - name: propertyId
+          in: path
+          description: Property ID
+          required: true
+          schema:
+            type: integer
       responses:
         200:
           description: List of selected candidates for the property
@@ -481,7 +508,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items: 
+                items:
                   $ref: '#/components/schemas/Candidates'
   /application/property/{propertyId}:
     get:
@@ -490,12 +517,12 @@ paths:
       summary: Get all Candidates for property
       tags: [Application]
       parameters:
-      - name: propertyId
-        in: path
-        description: Property ID
-        required: true
-        schema:
-          type: integer
+        - name: propertyId
+          in: path
+          description: Property ID
+          required: true
+          schema:
+            type: integer
       responses:
         200:
           description: List of candidates for the property
@@ -503,7 +530,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items: 
+                items:
                   $ref: '#/components/schemas/Candidates'
   /application/update-selected-candidates:
     put:
