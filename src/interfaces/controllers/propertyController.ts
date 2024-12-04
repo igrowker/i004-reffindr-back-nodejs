@@ -79,7 +79,7 @@ router.post(
         {
           params: { ownerEmail },
           headers: {
-            Authorization: req.headers['authorization'],
+            Authorization: req.headers['Authorization'],
           },
         }
       )
@@ -111,8 +111,39 @@ router.get('/get-properties', tokenMiddleware, async (req: Request, res: Respons
     const response = await httpClient.get('/Properties', {
       params: { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title },
       headers: {
-        Authorization: req.headers['authorization'],
+        Authorization: req.headers['Authorization'],
       },
+    })
+
+    return res.status(response.status).json(
+      new BaseResponse({
+        data: response.data,
+        statusCode: response.status,
+        hasErrors: false,
+        errors: [],
+      })
+    )
+  } catch (error: unknown) {
+    console.log(error)
+    return res.status(404).json(
+      new BaseResponse({
+        errors: ['No se encontraron propiedades que coincidan con su búsqueda.'],
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
+  }
+})
+
+router.get('/get-favorites-properties', tokenMiddleware, async (req: Request, res: Response) => {
+  const { userId } = req.query
+
+  try {
+    const response = await httpClient.get('/Properties/GetFavoriteProperties', {
+      headers: {
+        Authorization: req.headers['Authorization'],
+      },
+      params: { userId },
     })
 
     return res.status(response.status).json(

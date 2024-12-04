@@ -4,6 +4,7 @@ import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUI from 'swagger-ui-express'
 
 const { DEPLOY_URL } = process.env
+const { PORT } = process.env
 
 const options = {
   definition: {
@@ -22,7 +23,7 @@ const options = {
         description: 'Deployment Server',
       },
       {
-        url: 'http://localhost:3000',
+        url: `http://localhost:${PORT}`,
         description: 'Development Server',
       },
     ],
