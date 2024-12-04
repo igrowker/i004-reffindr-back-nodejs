@@ -334,6 +334,7 @@ paths:
                     type: boolean
                   statusCode:
                     type: number
+
   /properties/create-property:
     post:
       security:
@@ -446,6 +447,43 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Property'
+  /properties/get-favorites-properties:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Properties
+      summary: Get favorite properties
+      description: Retrieve a list of favorite properties for a user
+      operationId: getFavoriteProperties
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The ID of the user
+      responses:
+        '200':
+          description: A list of favorite properties
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                  statusCode:
+                    type: integer
+                  hasErrors:
+                    type: boolean
+                  errors:
+                    type: array
+                    items:
+                      type: string
+
   /application/create:
     post:
       security:
@@ -468,12 +506,12 @@ paths:
       summary: Get Selected Candidates for the property
       tags: [Application]
       parameters:
-      - name: propertyId
-        in: path
-        description: Property ID
-        required: true
-        schema:
-          type: integer
+        - name: propertyId
+          in: path
+          description: Property ID
+          required: true
+          schema:
+            type: integer
       responses:
         200:
           description: List of selected candidates for the property
@@ -481,7 +519,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items: 
+                items:
                   $ref: '#/components/schemas/Candidates'
   /application/property/{propertyId}:
     get:
@@ -490,12 +528,12 @@ paths:
       summary: Get all Candidates for property
       tags: [Application]
       parameters:
-      - name: propertyId
-        in: path
-        description: Property ID
-        required: true
-        schema:
-          type: integer
+        - name: propertyId
+          in: path
+          description: Property ID
+          required: true
+          schema:
+            type: integer
       responses:
         200:
           description: List of candidates for the property
@@ -503,7 +541,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items: 
+                items:
                   $ref: '#/components/schemas/Candidates'
   /application/update-selected-candidates:
     put:
@@ -596,6 +634,7 @@ paths:
                     type: boolean
                   statusCode:
                     type: number
+
   /users/profile:
     get:
       security:
