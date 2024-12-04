@@ -92,7 +92,6 @@ router.post(
         })
       )
     } catch (error: unknown) {
-      console.error(error)
       return res.status(400).json(
         new BaseResponse({
           errors: ['Error al registrar la propiedad.'],
@@ -124,7 +123,6 @@ router.get('/get-properties', tokenMiddleware, async (req: Request, res: Respons
       })
     )
   } catch (error: unknown) {
-    console.log(error)
     return res.status(404).json(
       new BaseResponse({
         errors: ['No se encontraron propiedades que coincidan con su búsqueda.'],
@@ -158,7 +156,43 @@ router.get('/get-favorites-properties', tokenMiddleware, async (req: Request, re
     console.log(error)
     return res.status(404).json(
       new BaseResponse({
-        errors: ['No se encontraron propiedades que coincidan con su búsqueda.'],
+        errors: ['No se encontraron propiedades favoritas.'],
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
+  }
+})
+
+router.post('/add-favorite', tokenMiddleware, async (req: Request, res: Response) => {
+  const { userId, propertyId } = req.query
+
+  try {
+    const response = await httpClient.post(
+      '/Properties/AddFavorite',
+      {},
+      {
+        headers: {
+          Authorization: req.headers['Authorization'],
+        },
+        params: { userId, propertyId },
+      }
+    )
+
+    return res.status(response.status).json(
+      new BaseResponse({
+        data: response.data,
+        statusCode: response.status,
+        hasErrors: false,
+        errors: [],
+      })
+    )
+  } catch (error: unknown) {
+    console.log(error)
+    const err = error as { response?: { status?: number; data?: { error?: string } } }
+    return res.status(err.response?.status || 500).json(
+      new BaseResponse({
+        errors: [err.response?.data?.error || 'Error al agregar propiedad a favoritos.'],
         hasErrors: true,
         statusCode: res.statusCode,
       })
