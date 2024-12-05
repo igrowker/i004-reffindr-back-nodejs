@@ -1,4 +1,6 @@
 import { Request, Response, Router } from 'express'
+import FormData from 'form-data'
+import multer from 'multer'
 
 import { BaseResponse } from '../../shared/utils/baseResponse'
 import { tokenMiddleware } from '../middlewares/tokenMiddleware'
@@ -6,23 +8,17 @@ import validateCreateProperty from '../middlewares/validateCreateProperty'
 import { validationError } from '../middlewares/validationError'
 import httpClient from '../services/httpClient'
 
+const upload = multer()
+
 const router = Router()
+
 router.post(
   '/create-property',
+  upload.array('images', 10),
   tokenMiddleware,
   validateCreateProperty,
   validationError,
   async (req: Request, res: Response) => {
-    const { ownerEmail } = req.query
-    if (!ownerEmail || typeof ownerEmail !== 'string') {
-      return res.status(400).json(
-        new BaseResponse({
-          errors: ['El correo del propietario (ownerEmail) es obligatorio y debe ser un string.'],
-          hasErrors: true,
-          statusCode: res.statusCode,
-        })
-      )
-    }
     const {
       countryId,
       stateId,
@@ -44,45 +40,59 @@ router.post(
       elevator,
       terrace,
       description,
+      ownerEmail,
+      price,
       requirementPostRequestDto: { isWorking, hasWarranty, rangeSalary },
     } = req.body
+
+    const formData = new FormData()
+    const propertyData = {
+      CountryId: countryId,
+      StateId: stateId,
+      Title: title,
+      Address: address,
+      Environments: environments,
+      Bathrooms: bathrooms,
+      Bedrooms: bedrooms,
+      Seniority: seniority,
+      Water: water,
+      Gas: gas,
+      Surveillance: surveillance,
+      Electricity: electricity,
+      Internet: internet,
+      Pool: pool,
+      Garage: garage,
+      Pets: pets,
+      Grill: grill,
+      Elevator: elevator,
+      Terrace: terrace,
+      OwnerEmail: ownerEmail,
+      Price: price,
+      Description: description,
+      IsWorking: isWorking,
+      HasWarranty: hasWarranty,
+      RangeSalary: rangeSalary,
+    }
+
+    // Append each property to formData
+    Object.entries(propertyData).forEach(([key, value]) => {
+      formData.append(key, value)
+    })
+
+    if (Array.isArray(req.files)) {
+      req.files.forEach((file: Express.Multer.File) => {
+        formData.append('images', file.buffer, file.originalname)
+      })
+    }
+
     try {
-      const response = await httpClient.post(
-        '/Properties/PostProperty',
-        {
-          CountryId: countryId,
-          StateId: stateId,
-          Title: title,
-          Address: address,
-          Environments: environments,
-          Bathrooms: bathrooms,
-          Bedrooms: bedrooms,
-          Seniority: seniority,
-          Water: water,
-          Gas: gas,
-          Surveillance: surveillance,
-          Electricity: electricity,
-          Internet: internet,
-          Pool: pool,
-          Garage: garage,
-          Pets: pets,
-          Grill: grill,
-          Elevator: elevator,
-          Terrace: terrace,
-          Description: description,
-          RequirementPostRequestDto: {
-            IsWorking: isWorking,
-            HasWarranty: hasWarranty,
-            RangeSalary: rangeSalary,
-          },
+      const response = await httpClient.post('/Properties/PostProperty', formData, {
+        params: { ownerEmail },
+        headers: {
+          Authorization: req.headers['Authorization'],
+          ...formData.getHeaders(),
         },
-        {
-          params: { ownerEmail },
-          headers: {
-            Authorization: req.headers['Authorization'],
-          },
-        }
-      )
+      })
       return res.status(response.status).json(
         new BaseResponse({
           data: response.data,
@@ -107,7 +117,7 @@ router.get('/get-properties', tokenMiddleware, async (req: Request, res: Respons
   try {
     const { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title } =
       req.query
-    const response = await httpClient.get('/Properties', {
+    const response = await httpClient.get('/Properties/GetProperty', {
       params: { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title },
       headers: {
         Authorization: req.headers['Authorization'],
