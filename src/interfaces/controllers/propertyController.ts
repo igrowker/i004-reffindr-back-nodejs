@@ -80,8 +80,11 @@ router.post(
     })
 
     if (Array.isArray(req.files)) {
-      req.files.forEach((file: Express.Multer.File) => {
-        formData.append('images', file.buffer, file.originalname)
+      req.files.forEach((file) => {
+        formData.append('Images', file.buffer, {
+          filename: file.originalname,
+          contentType: file.mimetype,
+        })
       })
     }
 
