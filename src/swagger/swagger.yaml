@@ -344,42 +344,111 @@ paths:
         - bearerAuth: []
       summary: Create a new property
       tags: [Properties]
-      parameters:
-        - name: ownerEmail
-          in: query
-          description: Email required
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CreateProperty'
-      responses:
-        200:
-          description: Property successfully created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                      message:
-                        type: string
-                  errors:
-                    type: array
-                    items:
-                      type: string
-                  hasErrors:
-                    type: boolean
-                  statusCode:
-                    type: number
+              type: object
+              properties:
+                ownerEmail:
+                  type: string
+                  nullable: true
+                countryId:
+                  type: integer
+                  nullable: true
+                stateId:
+                  type: integer
+                  nullable: true
+                title:
+                  type: string
+                  nullable: true
+                address:
+                  type: string
+                  nullable: true
+                environments:
+                  type: integer
+                  nullable: true
+                bathrooms:
+                  type: integer
+                  nullable: true
+                bedrooms:
+                  type: integer
+                  nullable: true
+                seniority:
+                  type: integer
+                  nullable: true
+                water:
+                  type: boolean
+                  nullable: true
+                  default: null
+                gas:
+                  type: boolean
+                  nullable: true
+                  default: null
+                surveillance:
+                  type: boolean
+                  nullable: true
+                  default: null
+                electricity:
+                  type: boolean
+                  nullable: true
+                  default: null
+                internet:
+                  type: boolean
+                  nullable: true
+                  default: null
+                pool:
+                  type: boolean
+                  nullable: true
+                  default: null
+                garage:
+                  type: boolean
+                  nullable: true
+                  default: null
+                pets:
+                  type: boolean
+                  nullable: true
+                  default: null
+                grill:
+                  type: boolean
+                  nullable: true
+                  default: null
+                elevator:
+                  type: boolean
+                  nullable: true
+                  default: null
+                terrace:
+                  type: boolean
+                  nullable: true
+                  default: null
+                description:
+                  type: string
+                  nullable: true
+                price:
+                  type: number
+                  nullable: true
+                requirementPostRequestDto:
+                  type: object
+                  properties:
+                    isWorking:
+                      type: boolean
+                      nullable: true
+                      default: null
+                    hasWarranty:
+                      type: boolean
+                      nullable: true
+                      default: null
+                    rangeSalary:
+                      type: integer
+                      nullable: true
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  nullable: true
+
   /properties/get-properties:
     get:
       security:

@@ -1,88 +1,98 @@
 import { Request, Response, Router } from 'express'
+import FormData from 'form-data'
+import multer from 'multer'
 
 import { BaseResponse } from '../../shared/utils/baseResponse'
 import { tokenMiddleware } from '../middlewares/tokenMiddleware'
-import validateCreateProperty from '../middlewares/validateCreateProperty'
-import { validationError } from '../middlewares/validationError'
 import httpClient from '../services/httpClient'
+import { validationError } from '../middlewares/validationError'
+//import validateCreateProperty from '../middlewares/validateCreateProperty'
+
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+ });
+
+
 
 const router = Router()
 router.post(
   '/create-property',
+  upload.array('Images', 10),
+  // validateCreateProperty,
   tokenMiddleware,
-  validateCreateProperty,
   validationError,
   async (req: Request, res: Response) => {
-    const { ownerEmail } = req.query
-    if (!ownerEmail || typeof ownerEmail !== 'string') {
-      return res.status(400).json(
-        new BaseResponse({
-          errors: ['El correo del propietario (ownerEmail) es obligatorio y debe ser un string.'],
-          hasErrors: true,
-          statusCode: res.statusCode,
-        })
-      )
+    const formData = new FormData();
+
+    if (req.files && Array.isArray(req.files)) {
+      req.files.forEach((file: Express.Multer.File) => {
+        formData.append('Images', file.buffer, file.originalname);
+      });
     }
-    const {
-      countryId,
-      stateId,
-      title,
-      address,
-      environments,
-      bathrooms,
-      bedrooms,
-      seniority,
-      water,
-      gas,
-      surveillance,
-      electricity,
-      internet,
-      pool,
-      garage,
-      pets,
-      grill,
-      elevator,
-      terrace,
-      description,
-      requirementPostRequestDto: { isWorking, hasWarranty, rangeSalary },
-    } = req.body
+
+    const fields = [
+      'CountryId',
+      'StateId',
+      'Title',
+      'Address',
+      'Environments',
+      'Bathrooms',
+      'Bedrooms',
+      'Seniority',
+      'Description',
+      'OwnerEmail',
+      'Price',
+    ];
+
+    fields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        formData.append(field, req.body[field].toString());
+      }
+    });
+
+    const booleanFields = [
+      'Water',
+      'Gas',
+      'Surveillance',
+      'Electricity',
+      'Internet',
+      'Pool',
+      'Garage',
+      'Pets',
+      'Grill',
+      'Elevator',
+      'Terrace',
+    ];
+
+    booleanFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        formData.append(field, req.body[field] === 'true' || req.body[field] === true ? 'true' : 'false');
+      }
+    });
+
+    const requirementFields = {
+      'RequirementPostRequestDto[IsWorking]': req.body.RequirementPostRequestDto?.IsWorking || false,
+      'RequirementPostRequestDto[HasWarranty]': req.body.RequirementPostRequestDto?.HasWarranty || false,
+      'RequirementPostRequestDto[RangeSalary]': req.body.RequirementPostRequestDto?.RangeSalary || 0,
+    };
+
+    Object.entries(requirementFields).forEach(([key, value]) => {
+      formData.append(key, value.toString());
+    });
+
     try {
       const response = await httpClient.post(
-        '/Properties/PostProperty',
+        `/Properties/PostProperty`,
+        formData,
         {
-          CountryId: countryId,
-          StateId: stateId,
-          Title: title,
-          Address: address,
-          Environments: environments,
-          Bathrooms: bathrooms,
-          Bedrooms: bedrooms,
-          Seniority: seniority,
-          Water: water,
-          Gas: gas,
-          Surveillance: surveillance,
-          Electricity: electricity,
-          Internet: internet,
-          Pool: pool,
-          Garage: garage,
-          Pets: pets,
-          Grill: grill,
-          Elevator: elevator,
-          Terrace: terrace,
-          Description: description,
-          RequirementPostRequestDto: {
-            IsWorking: isWorking,
-            HasWarranty: hasWarranty,
-            RangeSalary: rangeSalary,
-          },
-        },
-        {
-          params: { ownerEmail },
           headers: {
-            Authorization: req.headers['Authorization'],
+            Authorization: req.headers['authorization'],
+            ...formData.getHeaders(),
           },
         }
-      )
+      );
+
       return res.status(response.status).json(
         new BaseResponse({
           data: response.data,
@@ -90,24 +100,26 @@ router.post(
           hasErrors: false,
           errors: [],
         })
-      )
+      );
     } catch (error: unknown) {
+      console.error('Error al registrar la propiedad:', error);
+
       return res.status(400).json(
         new BaseResponse({
           errors: ['Error al registrar la propiedad.'],
           hasErrors: true,
           statusCode: res.statusCode,
         })
-      )
+      );
     }
   }
-)
+);
 
 router.get('/get-properties', tokenMiddleware, async (req: Request, res: Response) => {
   try {
     const { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title } =
       req.query
-    const response = await httpClient.get('/Properties', {
+    const response = await httpClient.get('/Properties/GetProperty', {
       params: { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title },
       headers: {
         Authorization: req.headers['Authorization'],
