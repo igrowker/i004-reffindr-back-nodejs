@@ -341,7 +341,6 @@ paths:
         - bearerAuth: []
       summary: Create a new property
       tags: [Properties]
-      parameters:
       requestBody:
         required: true
         content:
@@ -379,48 +378,67 @@ paths:
                 water:
                   type: boolean
                   nullable: true
+                  default: null
                 gas:
                   type: boolean
                   nullable: true
+                  default: null
                 surveillance:
                   type: boolean
                   nullable: true
+                  default: null
                 electricity:
                   type: boolean
                   nullable: true
+                  default: null
                 internet:
                   type: boolean
                   nullable: true
+                  default: null
                 pool:
                   type: boolean
                   nullable: true
+                  default: null
                 garage:
                   type: boolean
                   nullable: true
+                  default: null
                 pets:
                   type: boolean
                   nullable: true
+                  default: null
                 grill:
                   type: boolean
                   nullable: true
+                  default: null
                 elevator:
                   type: boolean
                   nullable: true
+                  default: null
                 terrace:
                   type: boolean
                   nullable: true
+                  default: null
                 description:
                   type: string
                   nullable: true
-                isWorking:
-                  type: boolean
+                price:
+                  type: number
                   nullable: true
-                hasWarranty:
-                  type: boolean
-                  nullable: true
-                rangeSalary:
-                  type: integer
-                  nullable: true
+                requirementPostRequestDto:
+                  type: object
+                  properties:
+                    isWorking:
+                      type: boolean
+                      nullable: true
+                      default: null
+                    hasWarranty:
+                      type: boolean
+                      nullable: true
+                      default: null
+                    rangeSalary:
+                      type: integer
+                      nullable: true
                 images:
                   type: array
                   items:

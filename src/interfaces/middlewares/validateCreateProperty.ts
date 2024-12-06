@@ -31,7 +31,6 @@ const validateCreateProperty: ValidationChain[] = [
   check('requirementPostRequestDto.rangeSalary')
     .notEmpty()
     .withMessage('Debe seleccionar un rango salarial')
-    .isNumeric()
     .withMessage('Debe seleccionar un número.'),
 ]
 

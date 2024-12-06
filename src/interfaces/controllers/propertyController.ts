@@ -46,56 +46,48 @@ router.post(
     } = req.body
 
     const formData = new FormData()
-    const propertyData = {
-      CountryId: countryId,
-      StateId: stateId,
-      Title: title,
-      Address: address,
-      Environments: environments,
-      Bathrooms: bathrooms,
-      Bedrooms: bedrooms,
-      Seniority: seniority,
-      Water: water,
-      Gas: gas,
-      Surveillance: surveillance,
-      Electricity: electricity,
-      Internet: internet,
-      Pool: pool,
-      Garage: garage,
-      Pets: pets,
-      Grill: grill,
-      Elevator: elevator,
-      Terrace: terrace,
-      OwnerEmail: ownerEmail,
-      Price: price,
-      Description: description,
-      IsWorking: isWorking,
-      HasWarranty: hasWarranty,
-      RangeSalary: rangeSalary,
-    }
-
-    // Append each property to formData
-    Object.entries(propertyData).forEach(([key, value]) => {
-      formData.append(key, value)
-    })
+    formData.append('CountryId', countryId)
+    formData.append('StateId', stateId)
+    formData.append('Title', title)
+    formData.append('Address', address)
+    formData.append('Environments', environments)
+    formData.append('Bathrooms', bathrooms)
+    formData.append('Bedrooms', bedrooms)
+    formData.append('Seniority', seniority)
+    formData.append('Water', water)
+    formData.append('Gas', gas)
+    formData.append('Surveillance', surveillance)
+    formData.append('Electricity', electricity)
+    formData.append('Internet', internet)
+    formData.append('Pool', pool)
+    formData.append('Garage', garage)
+    formData.append('Pets', pets)
+    formData.append('Grill', grill)
+    formData.append('Elevator', elevator)
+    formData.append('Terrace', terrace)
+    formData.append('Description', description)
+    formData.append('OwnerEmail', ownerEmail)
+    formData.append('Price', price)
+    formData.append('IsWorking', isWorking)
+    formData.append('HasWarranty', hasWarranty)
+    formData.append('RangeSalary', rangeSalary)
 
     if (Array.isArray(req.files)) {
-      req.files.forEach((file) => {
+      req.files.forEach((file: Express.Multer.File) => {
         formData.append('Images', file.buffer, {
           filename: file.originalname,
           contentType: file.mimetype,
         })
       })
     }
-
     try {
       const response = await httpClient.post('/Properties/PostProperty', formData, {
-        params: { ownerEmail },
         headers: {
-          Authorization: req.headers['Authorization'],
+          Authorization: req.headers['authorization'],
           ...formData.getHeaders(),
         },
       })
+
       return res.status(response.status).json(
         new BaseResponse({
           data: response.data,
@@ -105,6 +97,7 @@ router.post(
         })
       )
     } catch (error: unknown) {
+      console.error('Error al registrar la propiedad:', error)
       return res.status(400).json(
         new BaseResponse({
           errors: ['Error al registrar la propiedad.'],
