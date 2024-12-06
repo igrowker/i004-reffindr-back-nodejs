@@ -19,7 +19,7 @@ const router = Router()
 router.post(
   '/create-property',
   upload.array('Images', 10),
-  //validateCreateProperty,
+  // validateCreateProperty,
   tokenMiddleware,
   validationError,
   async (req: Request, res: Response) => {
@@ -31,43 +31,68 @@ router.post(
       });
     }
 
-    formData.append('CountryId', req.body.CountryId);
-    formData.append('StateId', req.body.StateId);
-    formData.append('Title', req.body.Title);
-    formData.append('Address', req.body.Address);
-    formData.append('Environments', req.body.Environments.toString());
-    formData.append('Bathrooms', req.body.Bathrooms.toString());
-    formData.append('Bedrooms', req.body.Bedrooms.toString());
-    formData.append('Seniority', req.body.Seniority.toString());
-    formData.append('Water', req.body.Water.toString());
-    formData.append('Gas', req.body.Gas.toString());
-    formData.append('Surveillance', req.body.Surveillance.toString());
-    formData.append('Electricity', req.body.Electricity.toString());
-    formData.append('Internet', req.body.Internet.toString());
-    formData.append('Pool', req.body.Pool.toString());
-    formData.append('Garage', req.body.Garage.toString());
-    formData.append('Pets', req.body.Pets.toString());
-    formData.append('Grill', req.body.Grill.toString());
-    formData.append('Elevator', req.body.Elevator.toString());
-    formData.append('Terrace', req.body.Terrace.toString());
-    formData.append('Description', req.body.Description);
-    formData.append('OwnerEmail', req.body.OwnerEmail);
-    formData.append('Price', req.body.Price.toString());
-    formData.append('RequirementPostRequestDto[IsWorking]', req.body.RequirementPostRequestDto.IsWorking.toString());
-    formData.append('RequirementPostRequestDto[HasWarranty]', req.body.RequirementPostRequestDto.HasWarranty.toString());
-    formData.append('RequirementPostRequestDto[RangeSalary]', req.body.RequirementPostRequestDto.RangeSalary);
+    const fields = [
+      'CountryId',
+      'StateId',
+      'Title',
+      'Address',
+      'Environments',
+      'Bathrooms',
+      'Bedrooms',
+      'Seniority',
+      'Description',
+      'OwnerEmail',
+      'Price',
+    ];
+
+    fields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        formData.append(field, req.body[field].toString());
+      }
+    });
+
+    const booleanFields = [
+      'Water',
+      'Gas',
+      'Surveillance',
+      'Electricity',
+      'Internet',
+      'Pool',
+      'Garage',
+      'Pets',
+      'Grill',
+      'Elevator',
+      'Terrace',
+    ];
+
+    booleanFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        formData.append(field, req.body[field] === 'true' || req.body[field] === true ? 'true' : 'false');
+      }
+    });
+
+    // Campos anidados
+    const requirementFields = {
+      'RequirementPostRequestDto[IsWorking]': req.body.RequirementPostRequestDto?.IsWorking || false,
+      'RequirementPostRequestDto[HasWarranty]': req.body.RequirementPostRequestDto?.HasWarranty || false,
+      'RequirementPostRequestDto[RangeSalary]': req.body.RequirementPostRequestDto?.RangeSalary || 0,
+    };
+
+    Object.entries(requirementFields).forEach(([key, value]) => {
+      formData.append(key, value.toString());
+    });
 
     try {
-
       const response = await httpClient.post(
         `/Properties/PostProperty`,
-        formData, {
+        formData,
+        {
           headers: {
             Authorization: req.headers['authorization'],
-            ...formData.getHeaders()
+            ...formData.getHeaders(),
           },
         }
-      )
+      );
 
       return res.status(response.status).json(
         new BaseResponse({
@@ -79,6 +104,8 @@ router.post(
       );
     } catch (error: unknown) {
       console.error('Error al registrar la propiedad:', error);
+
+      // Manejo de errores
       return res.status(400).json(
         new BaseResponse({
           errors: ['Error al registrar la propiedad.'],
@@ -89,7 +116,6 @@ router.post(
     }
   }
 );
-
 
 router.get('/get-properties', tokenMiddleware, async (req: Request, res: Response) => {
   try {
