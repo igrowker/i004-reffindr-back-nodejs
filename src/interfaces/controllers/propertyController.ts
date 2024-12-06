@@ -4,89 +4,70 @@ import multer from 'multer'
 
 import { BaseResponse } from '../../shared/utils/baseResponse'
 import { tokenMiddleware } from '../middlewares/tokenMiddleware'
-import validateCreateProperty from '../middlewares/validateCreateProperty'
-import { validationError } from '../middlewares/validationError'
 import httpClient from '../services/httpClient'
+import { validationError } from '../middlewares/validationError'
+//import validateCreateProperty from '../middlewares/validateCreateProperty'
 
-const upload = multer()
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+ });
+
+
 
 const router = Router()
-
 router.post(
   '/create-property',
-  upload.array('images', 10),
+  upload.array('Images', 10),
+  //validateCreateProperty,
   tokenMiddleware,
-  validateCreateProperty,
   validationError,
   async (req: Request, res: Response) => {
-    const {
-      countryId,
-      stateId,
-      title,
-      address,
-      environments,
-      bathrooms,
-      bedrooms,
-      seniority,
-      water,
-      gas,
-      surveillance,
-      electricity,
-      internet,
-      pool,
-      garage,
-      pets,
-      grill,
-      elevator,
-      terrace,
-      description,
-      ownerEmail,
-      price,
-      requirementPostRequestDto: { isWorking, hasWarranty, rangeSalary },
-    } = req.body
+    const formData = new FormData();
 
-    const formData = new FormData()
-    formData.append('CountryId', countryId)
-    formData.append('StateId', stateId)
-    formData.append('Title', title)
-    formData.append('Address', address)
-    formData.append('Environments', environments)
-    formData.append('Bathrooms', bathrooms)
-    formData.append('Bedrooms', bedrooms)
-    formData.append('Seniority', seniority)
-    formData.append('Water', water)
-    formData.append('Gas', gas)
-    formData.append('Surveillance', surveillance)
-    formData.append('Electricity', electricity)
-    formData.append('Internet', internet)
-    formData.append('Pool', pool)
-    formData.append('Garage', garage)
-    formData.append('Pets', pets)
-    formData.append('Grill', grill)
-    formData.append('Elevator', elevator)
-    formData.append('Terrace', terrace)
-    formData.append('Description', description)
-    formData.append('OwnerEmail', ownerEmail)
-    formData.append('Price', price)
-    formData.append('IsWorking', isWorking)
-    formData.append('HasWarranty', hasWarranty)
-    formData.append('RangeSalary', rangeSalary)
-
-    if (Array.isArray(req.files)) {
+    if (req.files && Array.isArray(req.files)) {
       req.files.forEach((file: Express.Multer.File) => {
-        formData.append('Images', file.buffer, {
-          filename: file.originalname,
-          contentType: file.mimetype,
-        })
-      })
+        formData.append('Images', file.buffer, file.originalname);
+      });
     }
+
+    formData.append('CountryId', req.body.CountryId);
+    formData.append('StateId', req.body.StateId);
+    formData.append('Title', req.body.Title);
+    formData.append('Address', req.body.Address);
+    formData.append('Environments', req.body.Environments.toString());
+    formData.append('Bathrooms', req.body.Bathrooms.toString());
+    formData.append('Bedrooms', req.body.Bedrooms.toString());
+    formData.append('Seniority', req.body.Seniority.toString());
+    formData.append('Water', req.body.Water.toString());
+    formData.append('Gas', req.body.Gas.toString());
+    formData.append('Surveillance', req.body.Surveillance.toString());
+    formData.append('Electricity', req.body.Electricity.toString());
+    formData.append('Internet', req.body.Internet.toString());
+    formData.append('Pool', req.body.Pool.toString());
+    formData.append('Garage', req.body.Garage.toString());
+    formData.append('Pets', req.body.Pets.toString());
+    formData.append('Grill', req.body.Grill.toString());
+    formData.append('Elevator', req.body.Elevator.toString());
+    formData.append('Terrace', req.body.Terrace.toString());
+    formData.append('Description', req.body.Description);
+    formData.append('OwnerEmail', req.body.OwnerEmail);
+    formData.append('Price', req.body.Price.toString());
+    formData.append('RequirementPostRequestDto[IsWorking]', req.body.RequirementPostRequestDto.IsWorking.toString());
+    formData.append('RequirementPostRequestDto[HasWarranty]', req.body.RequirementPostRequestDto.HasWarranty.toString());
+    formData.append('RequirementPostRequestDto[RangeSalary]', req.body.RequirementPostRequestDto.RangeSalary);
+
     try {
-      const response = await httpClient.post('/Properties/PostProperty', formData, {
-        headers: {
-          Authorization: req.headers['authorization'],
-          ...formData.getHeaders(),
-        },
-      })
+
+      const response = await httpClient.post(
+        `/Properties/PostProperty`,
+        formData, {
+          headers: {
+            Authorization: req.headers['authorization'],
+            ...formData.getHeaders()
+          },
+        }
+      )
 
       return res.status(response.status).json(
         new BaseResponse({
@@ -95,19 +76,20 @@ router.post(
           hasErrors: false,
           errors: [],
         })
-      )
+      );
     } catch (error: unknown) {
-      console.error('Error al registrar la propiedad:', error)
+      console.error('Error al registrar la propiedad:', error);
       return res.status(400).json(
         new BaseResponse({
           errors: ['Error al registrar la propiedad.'],
           hasErrors: true,
           statusCode: res.statusCode,
         })
-      )
+      );
     }
   }
-)
+);
+
 
 router.get('/get-properties', tokenMiddleware, async (req: Request, res: Response) => {
   try {
