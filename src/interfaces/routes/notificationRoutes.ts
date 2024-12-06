@@ -1,29 +1,10 @@
-import { Router } from "express";
+import { Router } from 'express'
 
-import notificationController from '../controllers/notificationController';
-
-const router = Router();
-
-router.use(notificationController);
-
-export default router
-
-
-
-
-
-
-
-
-
-
-
-/* import { Router } from 'express'
-import authController from '../controllers/authController'
+import { confirmProperty } from '../controllers/notificationController'
+import { validateAuthorization } from '../middlewares/validateNotification'
 
 const router = Router()
 
-router.use(authController)
+router.put('/confirm/:propertyId', validateAuthorization, confirmProperty)
 
 export default router
- */
