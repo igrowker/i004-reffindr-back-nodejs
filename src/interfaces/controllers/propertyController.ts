@@ -114,12 +114,36 @@ router.post(
     }
   }
 );
+router.get('/get-property/:propertyId', tokenMiddleware, async(req: Request, res: Response) => {
+  try {
+    const { propertyId } = req.params;
+    console.log(propertyId)
+    const response = await httpClient.get(`/Properties/GetProperty/${propertyId}`);
+    return res.status(response.status).json(
+      new BaseResponse({
+        data: response.data,
+        statusCode: response.status,
+        hasErrors: false,
+        errors: []
+      })
+    )
+  } 
+  catch (error) {
+    return res.status(404).json(
+      new BaseResponse({
+        errors: ['No se encontraron propiedades que coincidan con su búsqueda.'],
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
+  }
+});
 
 router.get('/get-properties', tokenMiddleware, async (req: Request, res: Response) => {
   try {
     const { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title } =
       req.query
-    const response = await httpClient.get('/Properties/GetProperty', {
+    const response = await httpClient.get('/Properties/GetProperties', {
       params: { CountryId, StateId, PriceMin, PriceMax, IsWorking, HasWarranty, RangeSalaryMin, RangeSalaryMax, Title },
       headers: {
         Authorization: req.headers['Authorization'],

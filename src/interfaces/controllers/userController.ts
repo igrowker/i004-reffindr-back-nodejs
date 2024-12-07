@@ -126,6 +126,7 @@ router.put(
         })
       )
     } catch (error: unknown) {
+      console.log(error)
       return res.status(400).json(
         new BaseResponse({
           errors: ['Error al actualizar el perfil.'],
