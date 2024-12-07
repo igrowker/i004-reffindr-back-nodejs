@@ -773,6 +773,12 @@ paths:
             schema:
               type: object
               properties:
+                countryId:
+                  type: integer
+                  description: User's country ID
+                stateId:
+                  type: integer
+                  description: User's state ID
                 email:
                   type: string
                   description: User's email
@@ -795,6 +801,12 @@ paths:
                   type: string
                   format: date-time
                   description: User's date of birth
+                genreId:
+                  type: integer
+                  description: User's genre ID
+                salaryId:
+                  type: integer
+                  description: User's salary ID
                 profileImage:
                   type: string
                   format: binary
@@ -916,35 +928,35 @@ paths:
           description: Internal server error
 
 /Notification/ConfirmProperty/{propertyId}:
-    put:
-      security:
-        - bearerAuth: []
-      summary: Confirm a property
-      tags: [Notification]
-      parameters:
-        - name: propertyId
-          in: path
-          description: The ID of the property to confirm
-          required: true
-          schema:
-            type: integer
-      responses:
-        200:
-          description: Property successfully confirmed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  success:
-                    type: boolean
-        400:
-          description: Error confirming property
-        401:
-          description: Unauthorized (no token provided)
-        404:
-          description: Property not found
-        500:
-          description: Internal server error
+  put:
+    security:
+      - bearerAuth: []
+    summary: Confirm a property
+    tags: [Notification]
+    parameters:
+      - name: propertyId
+        in: path
+        description: The ID of the property to confirm
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Property successfully confirmed
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                success:
+                  type: boolean
+      400:
+        description: Error confirming property
+      401:
+        description: Unauthorized (no token provided)
+      404:
+        description: Property not found
+      500:
+        description: Internal server error
