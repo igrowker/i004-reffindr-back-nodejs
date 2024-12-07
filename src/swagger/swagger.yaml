@@ -598,6 +598,43 @@ paths:
                     type: array
                     items:
                       type: string
+  /users/get-properties:
+    get:
+      summary: Get properties of the user
+      security:
+        - bearerAuth: []
+      tags: [Users]
+      responses:
+        200:
+          description: Properties retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        address:
+                          type: string
+                        price:
+                          type: number
+                        description:
+                          type: string
+                  statusCode:
+                    type: integer
+                  hasErrors:
+                    type: boolean
+                  errors:
+                    type: array
+                    items:
+                      type: string
 
   /application/create:
     post:

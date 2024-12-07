@@ -1,11 +1,14 @@
-import { Request, Response, Router } from 'express'
-import FormData from 'form-data'
-import multer from 'multer'
+import { Request, Response, Router } from 'express';
+import FormData from 'form-data';
+import multer from 'multer';
 
-import { BaseResponse } from '../../shared/utils/baseResponse'
-import { tokenMiddleware } from '../middlewares/tokenMiddleware'
-import { validationError } from '../middlewares/validationError'
-import httpClient from '../services/httpClient'
+
+
+import { BaseResponse } from '../../shared/utils/baseResponse';
+import { tokenMiddleware } from '../middlewares/tokenMiddleware';
+import { validationError } from '../middlewares/validationError';
+import httpClient from '../services/httpClient';
+
 
 //import validateCreateProperty from '../middlewares/validateCreateProperty'
 
@@ -228,5 +231,6 @@ router.post('/add-favorite', tokenMiddleware, async (req: Request, res: Response
     )
   }
 })
+
 
 export default router
