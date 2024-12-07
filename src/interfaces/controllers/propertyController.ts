@@ -4,16 +4,14 @@ import multer from 'multer'
 
 import { BaseResponse } from '../../shared/utils/baseResponse'
 import { tokenMiddleware } from '../middlewares/tokenMiddleware'
-import httpClient from '../services/httpClient'
 import { validationError } from '../middlewares/validationError'
-//import validateCreateProperty from '../middlewares/validateCreateProperty'
+import httpClient from '../services/httpClient'
 
+//import validateCreateProperty from '../middlewares/validateCreateProperty'
 
 const upload = multer({
   storage: multer.memoryStorage(),
- });
-
-
+})
 
 const router = Router()
 router.post(
@@ -23,12 +21,12 @@ router.post(
   tokenMiddleware,
   validationError,
   async (req: Request, res: Response) => {
-    const formData = new FormData();
+    const formData = new FormData()
 
     if (req.files && Array.isArray(req.files)) {
       req.files.forEach((file: Express.Multer.File) => {
-        formData.append('Images', file.buffer, file.originalname);
-      });
+        formData.append('Images', file.buffer, file.originalname)
+      })
     }
 
     const fields = [
@@ -43,13 +41,13 @@ router.post(
       'Description',
       'OwnerEmail',
       'Price',
-    ];
+    ]
 
     fields.forEach((field) => {
       if (req.body[field] !== undefined) {
-        formData.append(field, req.body[field].toString());
+        formData.append(field, req.body[field].toString())
       }
-    });
+    })
 
     const booleanFields = [
       'Water',
@@ -63,35 +61,31 @@ router.post(
       'Grill',
       'Elevator',
       'Terrace',
-    ];
+    ]
 
     booleanFields.forEach((field) => {
       if (req.body[field] !== undefined) {
-        formData.append(field, req.body[field] === 'true' || req.body[field] === true ? 'true' : 'false');
+        formData.append(field, req.body[field] === 'true' || req.body[field] === true ? 'true' : 'false')
       }
-    });
+    })
 
     const requirementFields = {
       'RequirementPostRequestDto[IsWorking]': req.body.RequirementPostRequestDto?.IsWorking || false,
       'RequirementPostRequestDto[HasWarranty]': req.body.RequirementPostRequestDto?.HasWarranty || false,
       'RequirementPostRequestDto[RangeSalary]': req.body.RequirementPostRequestDto?.RangeSalary || 0,
-    };
+    }
 
     Object.entries(requirementFields).forEach(([key, value]) => {
-      formData.append(key, value.toString());
-    });
+      formData.append(key, value.toString())
+    })
 
     try {
-      const response = await httpClient.post(
-        `/Properties/PostProperty`,
-        formData,
-        {
-          headers: {
-            Authorization: req.headers['authorization'],
-            ...formData.getHeaders(),
-          },
-        }
-      );
+      const response = await httpClient.post(`/Properties/PostProperty`, formData, {
+        headers: {
+          Authorization: req.headers['authorization'],
+          ...formData.getHeaders(),
+        },
+      })
 
       return res.status(response.status).json(
         new BaseResponse({
@@ -100,9 +94,9 @@ router.post(
           hasErrors: false,
           errors: [],
         })
-      );
+      )
     } catch (error: unknown) {
-      console.error('Error al registrar la propiedad:', error);
+      console.error('Error al registrar la propiedad:', error)
 
       return res.status(400).json(
         new BaseResponse({
@@ -110,25 +104,24 @@ router.post(
           hasErrors: true,
           statusCode: res.statusCode,
         })
-      );
+      )
     }
   }
-);
-router.get('/get-property/:propertyId', tokenMiddleware, async(req: Request, res: Response) => {
+)
+router.get('/get-property/:propertyId', tokenMiddleware, async (req: Request, res: Response) => {
   try {
-    const { propertyId } = req.params;
+    const { propertyId } = req.params
     console.log(propertyId)
-    const response = await httpClient.get(`/Properties/GetProperty/${propertyId}`);
+    const response = await httpClient.get(`/Properties/GetProperty/${propertyId}`)
     return res.status(response.status).json(
       new BaseResponse({
         data: response.data,
         statusCode: response.status,
         hasErrors: false,
-        errors: []
+        errors: [],
       })
     )
-  } 
-  catch (error) {
+  } catch (error) {
     return res.status(404).json(
       new BaseResponse({
         errors: ['No se encontraron propiedades que coincidan con su búsqueda.'],
@@ -137,7 +130,7 @@ router.get('/get-property/:propertyId', tokenMiddleware, async(req: Request, res
       })
     )
   }
-});
+})
 
 router.get('/get-properties', tokenMiddleware, async (req: Request, res: Response) => {
   try {
