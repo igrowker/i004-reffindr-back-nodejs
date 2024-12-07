@@ -138,6 +138,34 @@ router.put(
   }
 )
 
+router.get('/get-properties', tokenMiddleware, async (req: Request, res: Response) => {
+  try {
+    const response = await httpClient.get('/Users/get-tenantAnnounce', {
+      headers: {
+        Authorization: req.headers['Authorization'],
+      },
+    })
+
+    return res.status(response.status).json(
+      new BaseResponse({
+        data: response.data,
+        statusCode: response.status,
+        hasErrors: false,
+        errors: [],
+      })
+    )
+  } catch (error: unknown) {
+    console.log(error)
+    return res.status(404).json(
+      new BaseResponse({
+        errors: ['No se encontraron propiedades.'],
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
+  }
+})
+
 router.delete('/profile/:id', async (req: Request, res: Response) => {
   const { id } = req.params
 
