@@ -3,14 +3,13 @@ import { validationResult } from 'express-validator'
 import FormData from 'form-data'
 import multer from 'multer'
 
-
 import { BaseResponse } from '../../shared/utils/baseResponse'
 import { tokenMiddleware } from '../middlewares/tokenMiddleware'
 import validateUpdateUser from '../middlewares/validateUpdateUser'
 import { validationError } from '../middlewares/validationError'
 import httpClient from '../services/httpClient'
 
-const upload = multer();
+const upload = multer()
 
 const router = Router()
 
@@ -88,16 +87,20 @@ router.put(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() })
     }
-    const { email, name, lastName, dni, phone, address, birthDate } = req.body
+    const { countryId, stateId, email, name, lastName, dni, phone, address, birthDate, genreId, salaryId } = req.body
 
-    const formData = new FormData();
-    formData.append('Email', email);
-    formData.append('Name', name);
-    formData.append('LastName', lastName);
-    formData.append('Dni', dni);
-    formData.append('Phone', phone);
-    formData.append('Address', address);
-    formData.append('BirthDate', birthDate);
+    const formData = new FormData()
+    formData.append('Email', email)
+    formData.append('Name', name)
+    formData.append('LastName', lastName)
+    formData.append('Dni', dni)
+    formData.append('Phone', phone)
+    formData.append('Address', address)
+    formData.append('BirthDate', birthDate)
+    formData.append('CountryId', countryId)
+    formData.append('StateId', stateId)
+    formData.append('GenreId', genreId)
+    formData.append('SalaryId', salaryId)
 
     if (req.file) {
       formData.append('ProfileImage', req.file.buffer, {
@@ -107,15 +110,12 @@ router.put(
     }
 
     try {
-      const response = await httpClient.put(
-        `/Users/modify-credentials`, 
-        formData, {
-          headers: {
-            Authorization: req.headers['authorization'],
-            ...formData.getHeaders()
-          },
-        }
-      )
+      const response = await httpClient.put(`/Users/modify-credentials`, formData, {
+        headers: {
+          Authorization: req.headers['authorization'],
+          ...formData.getHeaders(),
+        },
+      })
 
       return res.status(response.status).json(
         new BaseResponse({
