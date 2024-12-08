@@ -163,14 +163,11 @@ router.get('/get-properties', tokenMiddleware, async (req: Request, res: Respons
 })
 
 router.get('/get-favorites-properties', tokenMiddleware, async (req: Request, res: Response) => {
-  const { userId } = req.query
-
   try {
     const response = await httpClient.get('/Properties/GetFavoriteProperties', {
       headers: {
         Authorization: req.headers['Authorization'],
       },
-      params: { userId },
     })
 
     return res.status(response.status).json(
