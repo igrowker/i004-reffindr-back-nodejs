@@ -1,14 +1,11 @@
-import { Request, Response, Router } from 'express';
-import FormData from 'form-data';
-import multer from 'multer';
+import { Request, Response, Router } from 'express'
+import FormData from 'form-data'
+import multer from 'multer'
 
-
-
-import { BaseResponse } from '../../shared/utils/baseResponse';
-import { tokenMiddleware } from '../middlewares/tokenMiddleware';
-import { validationError } from '../middlewares/validationError';
-import httpClient from '../services/httpClient';
-
+import { BaseResponse } from '../../shared/utils/baseResponse'
+import { tokenMiddleware } from '../middlewares/tokenMiddleware'
+import { validationError } from '../middlewares/validationError'
+import httpClient from '../services/httpClient'
 
 //import validateCreateProperty from '../middlewares/validateCreateProperty'
 
@@ -197,7 +194,7 @@ router.get('/get-favorites-properties', tokenMiddleware, async (req: Request, re
 })
 
 router.post('/add-favorite', tokenMiddleware, async (req: Request, res: Response) => {
-  const { userId, propertyId } = req.query
+  const { propertyId } = req.query
 
   try {
     const response = await httpClient.post(
@@ -207,7 +204,7 @@ router.post('/add-favorite', tokenMiddleware, async (req: Request, res: Response
         headers: {
           Authorization: req.headers['Authorization'],
         },
-        params: { userId, propertyId },
+        params: { propertyId },
       }
     )
 
@@ -232,5 +229,40 @@ router.post('/add-favorite', tokenMiddleware, async (req: Request, res: Response
   }
 })
 
+router.post('/remove-favorite', tokenMiddleware, async (req: Request, res: Response) => {
+  const { propertyId } = req.query
+
+  try {
+    const response = await httpClient.post(
+      '/Properties/RemoveFavorite',
+      {},
+      {
+        headers: {
+          Authorization: req.headers['Authorization'],
+        },
+        params: { propertyId },
+      }
+    )
+
+    return res.status(response.status).json(
+      new BaseResponse({
+        data: response.data,
+        statusCode: response.status,
+        hasErrors: false,
+        errors: [],
+      })
+    )
+  } catch (error: unknown) {
+    console.log(error)
+    const err = error as { response?: { status?: number; data?: { error?: string } } }
+    return res.status(err.response?.status || 500).json(
+      new BaseResponse({
+        errors: [err.response?.data?.error || 'Error al eliminar propiedad de favoritos.'],
+        hasErrors: true,
+        statusCode: res.statusCode,
+      })
+    )
+  }
+})
 
 export default router

@@ -558,6 +558,40 @@ paths:
                     type: array
                     items:
                       type: string
+  /properties/remove-favorite:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Properties
+      summary: Remove a property from favorites
+      description: Remove a property from the user's list of favorite properties
+      operationId: removeFavoriteProperty
+      parameters:
+        - name: propertyId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The ID of the property
+      responses:
+        '200':
+          description: Property removed from favorites
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                  statusCode:
+                    type: integer
+                  hasErrors:
+                    type: boolean
+                  errors:
+                    type: array
+                    items:
+                      type: string
   /properties/add-favorite:
     post:
       security:
@@ -568,12 +602,6 @@ paths:
       description: Add a property to the user's list of favorite properties
       operationId: addFavoriteProperty
       parameters:
-        - name: userId
-          in: query
-          required: true
-          schema:
-            type: string
-          description: The ID of the user
         - name: propertyId
           in: query
           required: true
