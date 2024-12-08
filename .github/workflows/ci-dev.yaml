@@ -40,10 +40,13 @@ jobs:
             ${{ runner.OS }}-node-
 
       - name: Install npm (latest)
-        run: npm install -g npm@latest
+        run: | 
+          npm install -g npm@latest
+          npm install -g npm-check
+
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Audit Dependencies
         run: npm audit --audit-level=high > audit-log.txt
