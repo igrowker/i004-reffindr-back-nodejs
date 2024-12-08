@@ -45,7 +45,9 @@ jobs:
           npm install -g npm-check
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
 
       - name: Audit Dependencies
         run: npm audit --audit-level=high > audit-log.txt
