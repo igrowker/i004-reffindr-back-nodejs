@@ -531,13 +531,6 @@ paths:
       summary: Get favorite properties
       description: Retrieve a list of favorite properties for a user
       operationId: getFavoriteProperties
-      parameters:
-        - name: userId
-          in: query
-          required: true
-          schema:
-            type: string
-          description: The ID of the user
       responses:
         '200':
           description: A list of favorite properties
