@@ -44,7 +44,6 @@ jobs:
           npm install -g npm@latest
           npm install -g npm-check
 
-
       - name: Install dependencies
         run: |
           rm -rf node_modules package-lock.json
