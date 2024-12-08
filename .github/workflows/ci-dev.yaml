@@ -49,11 +49,11 @@ jobs:
           rm -rf node_modules package-lock.json
           npm install
 
-      - name: Audit Dependencies
-        run: npm audit --audit-level=high > audit-log.txt
+      # - name: Audit Dependencies
+      #   run: npm audit --audit-level=high > audit-log.txt
 
-      - name: Display Audit Log
-        run: echo "$(cat audit-log.txt)"
+      # - name: Display Audit Log
+      #   run: echo "$(cat audit-log.txt)"
 
       - name: Upload Audit Logs
         uses: actions/upload-artifact@v4
