@@ -40,7 +40,7 @@ jobs:
             ${{ runner.OS }}-node-
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Audit Dependencies
         run: npm audit --audit-level=high > audit-log.txt
